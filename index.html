@@ -1,0 +1,1421 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#E95F0C"><meta name="color-scheme" content="light dark"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Oba Escala">
+<title>Oba Escala</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&display=swap">
+<style>
+/* Layout: cabeçalho laranja fixo; abaixo, barra de ferramentas e a grade mensal ocupando a largura toda,
+   com rolagem própria (nomes fixos à esquerda, dias fixos no topo). Painéis abrem como gaveta lateral
+   no computador e como folha inferior no celular. */
+:root {
+  --oba: #E95F0C; --oba-deep: #B84705; --oba-ink: #FFFFFF;
+  --bg: #FFFFFF; --page: #F3F0ED; --surface: #F8F6F4; --line: #E3DDD7; --line-strong: #B8AFA6;
+  --fg: #1E2227; --muted: #5E656E; --focus: #1D5FC4;
+  --work-bg: #EAF5EE; --work-fg: #1F7A45;
+  --rest-bg: #E9E8E6; --rest-fg: #383D43;
+  --sun-bg: #E2ECFA; --sun-fg: #1D5FC4;
+  --hol-bg: #FFEFD6; --hol-fg: #9A4C00;
+  --abs-bg: #EEE6FA; --abs-fg: #6340AE;
+  --bad: #CF332B; --bad-bg: #FCE9E8;
+  --ok: #1F7A45; --ok-bg: #E6F3EA;
+  --warn-bg: #FFF4E2; --warn-fg: #8A4600;
+  --shadow: 0 1px 2px rgba(50,30,10,.08), 0 8px 28px rgba(50,30,10,.12);
+  --font-display: "Nunito", "Nunito Sans", system-ui, sans-serif;
+  --font-body: "Nunito Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --r: 12px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --oba: #D9580B; --oba-deep: #FF9A5C; --bg: #17191C; --page: #101113; --surface: #1F2226; --line: #31353B; --line-strong: #4C525A;
+  --fg: #ECEEF0; --muted: #A3AAB3; --focus: #7FB0FF;
+  --work-bg: #17301F; --work-fg: #8FD8A8; --rest-bg: #2A2D31; --rest-fg: #D5D8DC; --sun-bg: #172A45; --sun-fg: #8DB7FF;
+  --hol-bg: #3A2A12; --hol-fg: #FFC07A; --abs-bg: #2B2140; --abs-fg: #C7AEFF; --bad: #FF6B61; --bad-bg: #3A1B19;
+  --ok: #8FD8A8; --ok-bg: #17301F; --warn-bg: #3A2A12; --warn-fg: #FFC07A; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 28px rgba(0,0,0,.5); color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --oba: #D9580B; --oba-deep: #FF9A5C; --bg: #17191C; --page: #101113; --surface: #1F2226; --line: #31353B; --line-strong: #4C525A;
+  --fg: #ECEEF0; --muted: #A3AAB3; --focus: #7FB0FF;
+  --work-bg: #17301F; --work-fg: #8FD8A8; --rest-bg: #2A2D31; --rest-fg: #D5D8DC; --sun-bg: #172A45; --sun-fg: #8DB7FF;
+  --hol-bg: #3A2A12; --hol-fg: #FFC07A; --abs-bg: #2B2140; --abs-fg: #C7AEFF; --bad: #FF6B61; --bad-bg: #3A1B19;
+  --ok: #8FD8A8; --ok-bg: #17301F; --warn-bg: #3A2A12; --warn-fg: #FFC07A; --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 28px rgba(0,0,0,.5); color-scheme: dark; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { background: var(--page); color: var(--fg); }
+body { font-family: var(--font-body); font-size: 14.5px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--oba); }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; text-wrap: balance; }
+.num { font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+
+/* Cabeçalho */
+.hdr { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--oba); color: var(--oba-ink); }
+.hdr-in { display: flex; align-items: center; gap: 10px; min-height: 58px; padding-block: 8px; flex-wrap: wrap; }
+.logo { width: 34px; height: 34px; border-radius: 9px; background: #fff; display: grid; place-items: center; flex: none; }
+.brand { font-family: var(--font-display); font-weight: 900; font-size: 21px; letter-spacing: -.01em; }
+.store { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 12px; border-radius: 17px; border: 1px solid rgba(255,255,255,.5); background: rgba(255,255,255,.14); color: #fff; font-weight: 700; font-size: 13px; max-width: 100%; }
+.hdr-act { margin-left: auto; display: flex; gap: 4px; }
+.hbtn { min-height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; color: #fff; font-weight: 800; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; position: relative; }
+.hbtn:hover { background: rgba(255,255,255,.16); }
+.hbtn:focus-visible { outline-color: #fff; }
+.hbadge { min-width: 19px; height: 19px; padding: 0 5px; border-radius: 10px; background: #fff; color: var(--bad); font-size: 11.5px; font-weight: 900; display: inline-grid; place-items: center; }
+
+main { padding-block: 16px 40px; display: flex; flex-direction: column; gap: 12px; max-width: 1600px; margin: 0 auto; }
+
+/* Barra superior */
+.top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.mnav { display: flex; align-items: center; gap: 2px; }
+.mtitle { font-family: var(--font-display); font-weight: 900; font-size: 24px; min-width: 7.6em; text-align: center; }
+.ibtn { width: 40px; height: 40px; border: 0; border-radius: 10px; background: transparent; display: grid; place-items: center; color: var(--fg); }
+.ibtn:hover { background: var(--surface); }
+.ibtn:disabled { opacity: .35; cursor: default; }
+.ctl { min-height: 42px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); font-size: 14.5px; min-width: 0; }
+select.ctl { padding-right: 30px; }
+.link { border: 0; background: none; color: var(--ok); font-weight: 800; padding: 6px 2px; }
+.tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn { min-height: 42px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); font-weight: 800; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; white-space: nowrap; }
+.btn:hover { border-color: var(--line-strong); }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn-pri { background: var(--oba); border-color: var(--oba); color: #fff; }
+.btn-pri:hover { background: var(--oba-deep); border-color: var(--oba-deep); }
+:root[data-theme="dark"] .btn-pri:hover { color: #1a0d03; }
+.btn-ok { background: var(--ok); border-color: var(--ok); color: var(--bg); }
+.btn-danger { background: var(--bad); border-color: var(--bad); color: #fff; }
+.seg { display: inline-flex; padding: 3px; gap: 3px; border-radius: 11px; background: var(--surface); border: 1px solid var(--line); }
+.seg button { min-height: 34px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; font-weight: 800; font-size: 13.5px; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--oba); color: #fff; }
+.search { position: relative; flex: 1 1 180px; max-width: 260px; }
+.search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+.search input { width: 100%; padding-left: 36px; }
+.sync { min-height: 32px; padding: 0 11px; border-radius: 16px; font-size: 12.5px; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; border: 0; }
+.sync.ok { background: var(--ok-bg); color: var(--ok); }
+.sync.busy { background: var(--surface); color: var(--muted); }
+.sync.err { background: var(--bad-bg); color: var(--bad); }
+.spin { width: 12px; height: 12px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spin { animation: none; } }
+
+.strip { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; font-size: 13.5px; }
+.strip b { font-weight: 800; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border: 0; background: none; padding: 4px 0; font-weight: 700; color: var(--fg); text-align: left; }
+.chip.bad { color: var(--bad); } .chip.ok { color: var(--ok); } .chip.warn { color: var(--warn-fg); }
+
+.panel { background: var(--bg); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.panel.auto { border-color: var(--oba); box-shadow: inset 4px 0 0 var(--oba); }
+.panel h2 { font-size: 17px; font-weight: 900; }
+.row { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.note { font-size: 13px; color: var(--muted); margin: 0; }
+.check { display: flex; gap: 8px; align-items: flex-start; font-weight: 700; font-size: 14px; }
+.check input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--oba); flex: none; }
+
+/* Grade */
+.gwrap { --name: 178px; --chapa: 66px; overflow: auto; max-height: calc(100vh - 230px); min-height: 260px; background: var(--bg); border: 1px solid var(--line-strong); border-radius: 10px; overscroll-behavior: contain; }
+.g { border-collapse: separate; border-spacing: 0; font-size: 12.5px; font-variant-numeric: tabular-nums; min-width: 100%; }
+.g th, .g td { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 0; text-align: center; }
+.g thead th { position: sticky; top: 0; z-index: 3; background: var(--surface); font-weight: 800; height: 40px; border-bottom: 1.5px solid var(--line-strong); }
+.g .d { min-width: 32px; line-height: 1.05; cursor: default; }
+.g .d .wl { display: block; font-size: 10.5px; color: var(--muted); }
+.g .d .dn { display: block; font-size: 13px; }
+.g thead .sun .wl, .g thead .sun .dn { color: var(--bad); }
+.g thead th.hol { background: var(--hol-bg); }
+.g thead th.today { box-shadow: inset 0 -3px 0 var(--oba); }
+.g .nm { position: sticky; left: 0; z-index: 2; background: var(--bg); text-align: left; padding: 3px 8px; width: var(--name); min-width: var(--name); max-width: var(--name); border-right: 1px solid var(--line-strong); }
+.g .cp { position: sticky; left: var(--name); z-index: 2; background: var(--bg); width: var(--chapa); min-width: var(--chapa); font-size: 11.5px; font-weight: 700; color: var(--muted); border-right: 1.5px solid var(--line-strong); }
+.g thead .nm, .g thead .cp { z-index: 4; background: var(--surface); font-size: 11.5px; }
+.nmb { display: block; width: 100%; border: 0; background: none; padding: 0; text-align: left; }
+.nmb .n1 { display: block; font-weight: 800; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-transform: uppercase; }
+.nmb .n2 { display: block; font-size: 10.5px; color: var(--muted); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nmb:hover .n1 { text-decoration: underline; }
+.g tr.sec th, .g tr.sec td { background: var(--oba); color: #fff; height: 28px; border-bottom: 0; }
+.g tr.sec th, .g tr.sum th { position: sticky; left: 0; z-index: 2; width: calc(var(--name) + var(--chapa)); min-width: calc(var(--name) + var(--chapa)); max-width: calc(var(--name) + var(--chapa)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-right: 1.5px solid var(--line-strong); }
+.g tr.sec th { text-align: left; padding-left: 8px; font-family: var(--font-display); font-weight: 900; font-size: 13px; letter-spacing: .03em; text-transform: uppercase; }
+.g tr.sec th span { font-weight: 700; text-transform: none; letter-spacing: 0; font-size: 12px; opacity: .92; }
+.g td.c { height: 34px; min-width: 32px; font-weight: 800; font-size: 11.5px; cursor: pointer; position: relative; user-select: none; -webkit-tap-highlight-color: transparent; }
+.g td.c:hover { box-shadow: inset 0 0 0 2px var(--focus); }
+.g td.c:focus { outline: 3px solid var(--focus); outline-offset: -3px; }
+.c-T { background: var(--work-bg); color: var(--work-fg); }
+.c-F { background: var(--rest-bg); color: var(--rest-fg); }
+.c-D { background: var(--sun-bg); color: var(--sun-fg); }
+.c-FT, .c-X, .c-C { background: var(--hol-bg); color: var(--hol-fg); }
+.c-A { background: var(--abs-bg); color: var(--abs-fg); font-size: 10px !important; }
+.g td.c.bad { box-shadow: inset 0 0 0 2px var(--bad); }
+.g td.c.bad::after { content: ""; position: absolute; top: 0; right: 0; border-style: solid; border-width: 0 9px 9px 0; border-color: transparent var(--bad) transparent transparent; }
+.g td.c.pv { box-shadow: inset 0 0 0 2px var(--oba); }
+.g td.c.pv::before { content: ""; position: absolute; left: 2px; top: 2px; width: 6px; height: 6px; border-radius: 50%; background: var(--oba); }
+.g td.c.saving { opacity: .55; }
+.g td.c.flash { animation: flash 1s ease-out; }
+@keyframes flash { from { box-shadow: inset 0 0 0 3px var(--ok); } to { box-shadow: none; } }
+@media (prefers-reduced-motion: reduce) { .g td.c.flash { animation: none; } }
+.g td.c.us { background-image: repeating-linear-gradient(135deg, transparent 0 6px, color-mix(in srgb, var(--line) 70%, transparent) 6px 7px); }
+.g .tot { min-width: 38px; padding: 0 4px; font-size: 12px; font-weight: 800; background: var(--surface); color: var(--muted); }
+.g .tot.first { border-left: 1.5px solid var(--line-strong); }
+.g thead .tot b { display: block; color: var(--fg); font-size: 12px; } .g thead .tot { font-size: 10px; line-height: 1.1; }
+.g .tot.tT { color: var(--work-fg); } .g .tot.tF { color: var(--rest-fg); } .g .tot.tD { color: var(--sun-fg); } .g .tot.tC { color: var(--hol-fg); }
+.g tr.sum th, .g tr.sum td { background: var(--surface); font-size: 11.5px; font-weight: 800; color: var(--muted); height: 26px; }
+.g tr.sum th { text-align: left; padding-left: 8px; } .g tr.sum th small { display: block; font-weight: 600; font-size: 10px; }
+.g tr.sum td.low { background: var(--bad-bg); color: var(--bad); }
+.g tr.sum td.hol { background: var(--hol-bg); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; font-weight: 700; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { min-width: 26px; height: 20px; padding: 0 4px; border-radius: 5px; display: inline-grid; place-items: center; font-size: 10.5px; font-weight: 900; border: 1px solid var(--line); }
+.sw.bad { background: var(--bg); box-shadow: inset 0 0 0 2px var(--bad); position: relative; }
+.empty { background: var(--bg); border: 1px dashed var(--line-strong); border-radius: var(--r); padding: 22px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.empty h2 { font-size: 19px; }
+
+/* Menu da célula */
+.pop { position: fixed; z-index: 60; width: 320px; max-width: calc(100vw - 24px); max-height: calc(100vh - 24px); overflow: auto; background: var(--bg); border: 1px solid var(--line-strong); border-radius: 14px; box-shadow: var(--shadow); padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.pop-h { display: flex; flex-direction: column; gap: 2px; }
+.pop-h b { font-size: 15px; } .pop-h span { font-size: 12.5px; color: var(--muted); }
+.opts { display: flex; flex-direction: column; gap: 3px; }
+.opt { display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 4px 8px; border: 1px solid transparent; border-radius: 9px; background: transparent; text-align: left; font-weight: 700; font-size: 14px; }
+.opt:hover, .opt:focus-visible { background: var(--surface); border-color: var(--line); }
+.opt[aria-checked="true"] { border-color: var(--line-strong); background: var(--surface); }
+.opt .sw { width: 38px; }
+.opt .lb { flex: 1; } .opt kbd { font: 700 11px var(--font-body); color: var(--muted); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; }
+.iss { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; }
+.iss li { padding: 8px 10px; border-radius: 9px; }
+.iss .b { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.iss .w { background: var(--warn-bg); color: var(--warn-fg); }
+.iss .o { background: var(--ok-bg); color: var(--ok); }
+.iss .i { background: var(--surface); color: var(--fg); }
+.alts { display: flex; flex-wrap: wrap; gap: 6px; }
+.alts .btn { min-height: 34px; font-size: 13px; padding: 0 10px; }
+.acts { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+.lbl { font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+
+/* Gaveta / folha */
+.scrim { position: fixed; inset: 0; z-index: 50; background: rgba(15,10,5,.38); }
+.sheet { position: fixed; z-index: 51; top: 0; right: 0; bottom: 0; width: min(520px, 100vw); background: var(--bg); box-shadow: var(--shadow); display: flex; flex-direction: column; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-right: env(safe-area-inset-right, 0px); }
+.sh-h { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 18px; border-bottom: 1px solid var(--line); }
+.sh-h h2 { flex: 1; font-size: 19px; font-weight: 900; min-width: 0; }
+.sh-b { overflow: auto; padding: 16px 18px 28px; display: flex; flex-direction: column; gap: 16px; }
+@media (max-width: 640px) {
+  .sheet { top: auto; left: 0; width: 100vw; max-height: 88vh; border-radius: 16px 16px 0 0; padding-left: env(safe-area-inset-left, 0px); }
+  .pop { left: 0 !important; right: 0; bottom: 0; top: auto !important; width: 100vw; max-width: 100vw; border-radius: 16px 16px 0 0; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); max-height: 80vh; }
+  .gwrap { --name: 132px; --chapa: 0px; max-height: calc(100vh - 170px); }
+  .g .cp { display: none; }
+  .mtitle { font-size: 20px; min-width: 0; }
+  .hide-sm { display: none !important; }
+}
+.form { display: flex; flex-direction: column; gap: 12px; }
+.field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.field label, .field .fl { font-size: 13px; font-weight: 800; color: var(--muted); }
+.field .ctl { width: 100%; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid2 > * { min-width: 0; }
+.err { color: var(--bad); font-size: 12.5px; font-weight: 700; }
+.list { display: flex; flex-direction: column; gap: 6px; }
+.li { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); text-align: left; width: 100%; }
+button.li:hover { background: var(--surface); }
+.li .grow { flex: 1; min-width: 0; }
+.li .t1 { font-weight: 800; } .li .t2 { font-size: 12.5px; color: var(--muted); }
+.pill { display: inline-flex; padding: 2px 8px; border-radius: 999px; font-size: 11.5px; font-weight: 800; background: var(--surface); color: var(--muted); border: 1px solid var(--line); white-space: nowrap; }
+.pill.bad { background: var(--bad-bg); color: var(--bad); border-color: transparent; }
+.pill.warn { background: var(--warn-bg); color: var(--warn-fg); border-color: transparent; }
+.pill.ok { background: var(--ok-bg); color: var(--ok); border-color: transparent; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: 13.5px; margin: 0; }
+.kv dt { color: var(--muted); font-weight: 700; } .kv dd { margin: 0; font-weight: 700; min-width: 0; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.stat { background: var(--surface); border-radius: 10px; padding: 8px 4px; text-align: center; }
+.stat b { display: block; font-family: var(--font-display); font-size: 20px; font-weight: 900; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 11.5px; font-weight: 700; color: var(--muted); }
+.days { display: flex; flex-direction: column; gap: 4px; }
+.dayr { display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 9px; background: var(--bg); text-align: left; width: 100%; }
+.dayr .dd { width: 76px; font-weight: 800; font-size: 13px; } .dayr .dd.sun { color: var(--bad); }
+.dayr .lb { flex: 1; font-size: 13.5px; font-weight: 600; }
+.dayr.bad { border-color: var(--bad); }
+.toast { position: fixed; z-index: 80; left: 50%; transform: translateX(-50%); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); max-width: min(560px, calc(100vw - 32px)); background: var(--fg); color: var(--bg); padding: 12px 16px; border-radius: 12px; font-weight: 700; font-size: 14px; box-shadow: var(--shadow); display: flex; gap: 12px; align-items: center; }
+.toast.bad { background: var(--bad); color: #fff; }
+.toast button { border: 0; background: none; color: inherit; font-weight: 900; text-decoration: underline; padding: 0; }
+textarea.ctl { padding: 10px 12px; min-height: 90px; resize: vertical; }
+
+/* Mapa de calor: cor mais forte = mais gente trabalhando, em proporção à equipe da linha. */
+.hwrap { overflow: auto; background: var(--bg); border: 1px solid var(--line-strong); border-radius: 10px; }
+.hm { border-collapse: separate; border-spacing: 2px; font-size: 12.5px; font-variant-numeric: tabular-nums; min-width: 100%; padding: 4px; }
+.hm th, .hm td { text-align: center; padding: 0; }
+.hm thead th { font-weight: 800; height: 36px; color: var(--fg); position: sticky; top: 0; background: var(--bg); z-index: 2; }
+.hm thead th .wl { display: block; font-size: 10.5px; color: var(--muted); } .hm thead th .dn { display: block; font-size: 13px; }
+.hm thead th.sun .wl, .hm thead th.sun .dn { color: var(--bad); }
+.hm thead th.hol { box-shadow: inset 0 -3px 0 var(--hol-fg); }
+.hm th.rh { position: sticky; left: 0; z-index: 3; background: var(--bg); text-align: left; padding: 0 10px 0 6px; white-space: nowrap; min-width: 150px; font-weight: 800; }
+.hm th.rh small { display: block; font-weight: 600; font-size: 11px; color: var(--muted); }
+.hm tr.tot th.rh { color: var(--oba-deep); }
+.hm td.hc { min-width: 34px; height: 38px; border-radius: 6px; font-weight: 800; font-size: 13px; }
+.hm td.hc.out { background: transparent; }
+.hm td.avg { min-width: 54px; font-weight: 900; font-size: 13px; color: var(--fg); background: var(--surface); border-radius: 6px; }
+.hscale { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700; color: var(--muted); flex-wrap: wrap; }
+.hscale .bar { display: flex; gap: 2px; } .hscale .bar i { width: 26px; height: 14px; border-radius: 3px; display: block; }
+.hsec { display: flex; flex-direction: column; gap: 8px; }
+.hsec h2 { font-size: 16px; font-weight: 900; }
+/* Tela cheia: a grade ocupa a tela toda; no celular em pé, a área gira 90° para ficar na horizontal. */
+body.full { overflow: hidden; }
+body.full .hdr { display: none; }
+body.full main#app { position: fixed; inset: 0; z-index: 40; max-width: none; margin: 0; background: var(--page); display: flex; flex-direction: column; gap: 8px;
+  padding: max(8px, env(safe-area-inset-top, 0px)) max(8px, env(safe-area-inset-right, 0px)) max(8px, env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)); }
+body.full .gwrap { flex: 0 1 auto; max-height: none !important; min-height: 0; }
+body.full .empty { flex: 1 1 auto; }
+body.full.rot main#app { inset: auto; top: 0; left: 0; width: var(--fh, 100vh); height: var(--fw, 100vw); transform: translateX(var(--fw, 100vw)) rotate(90deg); transform-origin: 0 0; padding: 8px; }
+.fbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; flex: none; }
+.fbar .fexit { order: -1; }
+@media (max-width: 640px) { body.full:not(.rot) .fbar .sync { display: none; } body.full:not(.rot) .fbar .grow { display: none; } }
+.fbar::-webkit-scrollbar { display: none; }
+.fbar > * { flex: none; }
+.fbar .mtitle { font-size: 18px; min-width: 0; white-space: nowrap; padding: 0 2px; }
+.fbar .btn, .fbar .ctl { min-height: 36px; font-size: 13px; padding: 0 10px; }
+.fbar .ibtn { width: 36px; height: 36px; }
+.fbar .grow { flex: 1 1 auto; min-width: 4px; }
+body.rot #popRoot, body.rot #sheetRoot, body.rot #toastRoot { position: fixed; top: 0; left: 0; width: var(--fh, 100vh); height: var(--fw, 100vw); transform: translateX(var(--fw, 100vw)) rotate(90deg); transform-origin: 0 0; z-index: 70; pointer-events: none; }
+body.rot #popRoot > *, body.rot #sheetRoot > *, body.rot #toastRoot > * { pointer-events: auto; }
+body.rot .pop { left: 50% !important; top: 50% !important; right: auto; bottom: auto; transform: translate(-50%, -50%); width: min(360px, 92%); max-width: none; max-height: 94%; border-radius: 14px; padding: 12px; }
+body.rot .sheet { top: 0; bottom: 0; left: auto; right: 0; width: min(460px, 75%); max-height: none; border-radius: 0; padding: 0; }
+</style>
+</head><body>
+<script>
+// ======================= Armazenamento local (fora do Claude) =======================
+// Mesma interface usada pelo app (coleções, documentos, avisos de mudança), gravando neste aparelho.
+(function () {
+  if (window.claude && window.claude.use) return;
+  const KEY = 'oba-escala-dados-v1';
+  let store = {}; try { store = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { store = {}; }
+  const subs = new Set(); let t = null;
+  const notify = () => { clearTimeout(t); t = setTimeout(() => subs.forEach(f => { try { f(); } catch (e) {} }), 0); };
+  function save() {
+    const hist = Object.keys(store).filter(k => k.startsWith('historico/')).sort();
+    for (const k of hist.slice(0, Math.max(0, hist.length - 300))) delete store[k];
+    try { localStorage.setItem(KEY, JSON.stringify(store)); }
+    catch (e) { throw { code: 'quota_exceeded', message: 'o armazenamento do navegador está cheio.' }; }
+  }
+  window.addEventListener('storage', ev => { if (ev.key === KEY) { try { store = JSON.parse(ev.newValue || '{}') || {}; } catch (e) {} notify(); } });
+  const clone = v => v === undefined ? undefined : JSON.parse(JSON.stringify(v));
+  const snap = p => ({ id: p.split('/').pop(), exists: p in store, data: () => clone(store[p]), metadata: { fromCache: false, hasPendingWrites: false } });
+  let n = 0; const newId = () => Date.now().toString(36) + (++n).toString(36) + Math.random().toString(36).slice(2, 8);
+  const doc = p => ({ id: p.split('/').pop(), path: p,
+    get: async () => snap(p),
+    set: async v => { const old = store[p]; store[p] = clone(v); try { save(); } catch (e) { if (old === undefined) delete store[p]; else store[p] = old; throw e; } notify(); },
+    update: async v => { if (!(p in store)) throw { code: 'invalid_argument', message: 'documento não existe' }; store[p] = { ...store[p], ...clone(v) }; save(); notify(); },
+    delete: async () => { delete store[p]; save(); notify(); },
+    onSnapshot: (cb) => { const f = () => cb(snap(p)); subs.add(f); setTimeout(f, 0); return () => subs.delete(f); } });
+  const col = c => { const q = { path: c,
+      onSnapshot: (cb) => { const f = () => { const docs = Object.keys(store).filter(k => k.startsWith(c + '/') && k.split('/').length === c.split('/').length + 1).map(snap); cb({ docs, size: docs.length, empty: !docs.length, docChanges: () => [], metadata: {} }); }; subs.add(f); setTimeout(f, 0); return () => subs.delete(f); },
+      orderBy: () => q, limit: () => q, where: () => q,
+      doc: id => doc(c + '/' + (id || newId())),
+      add: async v => { const r = doc(c + '/' + newId()); await r.set(v); return r; } }; return q; };
+  window.__obaLocal = {
+    db: { collection: col, doc },
+    downloads: { save: async ({ filename, data }) => {
+      const blob = data instanceof Blob ? data : new Blob([data], { type: /\.csv$/i.test(filename) ? 'text/csv;charset=utf-8' : /\.json$/i.test(filename) ? 'application/json' : 'application/octet-stream' });
+      const file = (() => { try { return new File([blob], filename, { type: blob.type }); } catch (e) { return null; } })();
+      // No celular, abre o menu de compartilhar (salvar em Arquivos, WhatsApp, e-mail); no PC, baixa o arquivo.
+      if (file && navigator.canShare && navigator.canShare({ files: [file] }) && matchMedia('(pointer: coarse)').matches) {
+        try { await navigator.share({ files: [file], title: filename }); return { status: 'delivered' }; } catch (e) { if (e && e.name === 'AbortError') throw { code: 'declined' }; }
+      }
+      const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000); return { status: 'saved' };
+    } }
+  };
+  try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+})();
+</script>
+
+
+<header class="hdr"><div class="hdr-in gutter">
+  <span class="logo" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="14" r="7.2" fill="#E95F0C"/><circle cx="12" cy="14" r="3.6" fill="#fff"/><path d="M12 6.8c0-2 1.2-3.6 3.4-4.2-.2 2.2-1.4 3.6-3.4 4.2z" fill="#2E8B47"/></svg></span>
+  <span class="brand">Oba Escala</span>
+  <button class="store" id="storeBtn" data-act="rules" title="Nome da loja e feriados"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9M4 9v11h16V9M3 9h18M9 20v-6h6v6"/></svg><span id="storeName">Escala</span></button>
+  <nav class="hdr-act" aria-label="Painéis">
+
+    <button class="hbtn" data-act="team"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg><span class="hide-sm">Equipe</span></button>
+    <button class="hbtn" data-act="rules"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg><span class="hide-sm">Loja e feriados</span></button>
+  </nav>
+</div></header>
+<main id="app" class="gutter"><p class="muted">Carregando a escala…</p></main>
+<div id="popRoot"></div>
+<div id="sheetRoot"></div>
+<div id="toastRoot" aria-live="polite"></div>
+
+<script src="jspdf.umd.min.js"></script>
+<script>
+"use strict";
+// ======================= Datas =======================
+const pad = n => String(n).padStart(2, '0');
+const iso = (y, m, d) => { const t = new Date(Date.UTC(y, m - 1, d)); return t.getUTCFullYear() + '-' + pad(t.getUTCMonth() + 1) + '-' + pad(t.getUTCDate()); };
+const P = s => { const [y, m, d] = s.split('-').map(Number); return { y, m, d }; };
+const dnum = s => { const p = P(s); return Math.round(Date.UTC(p.y, p.m - 1, p.d) / 864e5); };
+const fromNum = n => { const t = new Date(n * 864e5); return t.getUTCFullYear() + '-' + pad(t.getUTCMonth() + 1) + '-' + pad(t.getUTCDate()); };
+const add = (s, n) => fromNum(dnum(s) + n);
+const wd = s => (new Date(dnum(s) * 864e5).getUTCDay() + 6) % 7; // Seg=0 … Dom=6
+const wstart = s => add(s, -wd(s));
+const dim = (y, m) => new Date(Date.UTC(y, m, 0)).getUTCDate();
+const ymOf = s => s.slice(0, 7);
+const addMonth = (y, m, n) => { const t = y * 12 + m - 1 + n; return { y: Math.floor(t / 12), m: t % 12 + 1 }; };
+const range = (a, b) => { const out = []; for (let n = dnum(a), e = dnum(b); n <= e; n++) out.push(fromNum(n)); return out; };
+const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+const WL = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'];
+const WD3 = ['seg', 'ter', 'qua', 'qui', 'sex', 'sáb', 'dom'];
+const WDL = ['segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado', 'domingo'];
+const fd = s => { const p = P(s); return pad(p.d) + '/' + pad(p.m); };
+const fdw = s => WD3[wd(s)] + ' ' + fd(s);
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const nowLocal = new Date();
+const TODAY = iso(nowLocal.getFullYear(), nowLocal.getMonth() + 1, nowLocal.getDate());
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const norm = s => String(s || '').trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ');
+
+// Feriados nacionais (Lei 662/1949, Lei 6.802/1980, Lei 14.759/2023). Estaduais e municipais são cadastrados em Regras.
+function easter(y) {
+  const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
+  return iso(y, Math.floor((h + l - 7 * m + 114) / 31), ((h + l - 7 * m + 114) % 31) + 1);
+}
+function nationalHolidays(y) {
+  const L = [[1, 1, 'Confraternização Universal'], [4, 21, 'Tiradentes'], [5, 1, 'Dia do Trabalho'], [9, 7, 'Independência do Brasil'], [10, 12, 'Nossa Senhora Aparecida'], [11, 2, 'Finados'], [11, 15, 'Proclamação da República'], [12, 25, 'Natal']];
+  const out = L.map(([m, d, n]) => ({ date: iso(y, m, d), name: n, auto: true }));
+  if (y >= 2024) out.push({ date: iso(y, 11, 20), name: 'Dia Nacional de Zumbi e da Consciência Negra', auto: true });
+  out.push({ date: add(easter(y), -2), name: 'Paixão de Cristo', auto: true });
+  return out;
+}
+
+// ======================= Códigos dos dias =======================
+// Em branco = trabalha. Cada código tem sigla própria para não depender só da cor.
+const CODES = {
+  '': { lb: 'Trabalha', sh: '', cls: 'c-T', key: 't' },
+  F: { lb: 'Folga semanal', sh: 'F', cls: 'c-F', key: 'f', rest: true, notSun: true },
+  D: { lb: 'Folga dominical', sh: 'FD', cls: 'c-D', key: 'd', rest: true, sunOnly: true },
+  FT: { lb: 'Feriado trabalhado', sh: 'FT', cls: 'c-FT', key: 'h', holOnly: true, work: true },
+  X: { lb: 'Não trabalha no feriado', sh: 'X', cls: 'c-X', key: 'x', holOnly: true },
+  C: { lb: 'Folga compensatória de feriado', sh: 'FF', cls: 'c-C', key: 'c' },
+  FE: { lb: 'Férias', sh: 'FÉR', cls: 'c-A', key: 'e', abs: true },
+  AF: { lb: 'Afastamento', sh: 'AF', cls: 'c-A', key: 'a', abs: true }
+};
+const ORDER = ['', 'F', 'D', 'FT', 'X', 'C', 'FE', 'AF'];
+const isWork = c => c === '' || c === 'FT';
+const isRest = c => c === 'F' || c === 'D';
+const isAbs = c => c === 'FE' || c === 'AF';
+
+// ======================= Estado =======================
+const DEF_RULES = { semana: 'alerta', consec: 'alerta', domingo: 'alerta', cobertura: 'alerta', ausencia: 'bloquear', compensacao: 'alerta' };
+const RULE_INFO = {
+  semana: ['Folgas por semana (5x2)', 'Cada semana de segunda a domingo tem 2 folgas semanais (folga semanal ou dominical). Com férias ou afastamento na semana, a exigência é proporcional.'],
+  consec: ['Dias seguidos de trabalho', 'Limite de dias de trabalho em sequência sem folga.'],
+  domingo: ['Folga aos domingos', 'Cada colaborador folga ao menos 1 domingo a cada N domingos, conforme a regra do setor ou da pessoa.'],
+  cobertura: ['Mínimo de pessoas no setor', 'Quantidade mínima de pessoas trabalhando por dia, configurada em cada setor.'],
+  ausencia: ['Folga sobre férias ou afastamento', 'Marcar folga ou trabalho num dia que está como férias ou afastamento.'],
+  compensacao: ['Folga compensatória', 'Folga compensatória sem feriado trabalhado pendente, ou feriado trabalhado sem compensação dentro do prazo.']
+};
+const S = {
+  db: null, user: null, canWrite: false, canAdmin: false, ready: false, offline: false,
+  cfg: { storeName: '', maxConsec: 6, compPrazo: 0, rules: { ...DEF_RULES } },
+  sectors: [], emps: [], esc: {}, hols: [], loaded: new Set(),
+  y: +TODAY.slice(0, 4), m: +TODAY.slice(5, 7), sector: 'all', q: '', mode: 'manual',
+  cursor: null, preview: null, undo: [], saving: 0, saveErr: null, pending: {}, flash: null,
+  view: 'grid', heatMode: 'dia',
+  menu: null, sheet: null, autoOpts: { redo: false }, full: false, rotPref: true, fsOwned: false
+};
+try { const p = JSON.parse(localStorage.getItem('oba-escala-view') || '{}'); if (p.sector) S.sector = p.sector; } catch (e) {}
+const saveView = () => { try { localStorage.setItem('oba-escala-view', JSON.stringify({ sector: S.sector })); } catch (e) {} };
+
+const docKey = (empId, ym) => empId + '_' + ym;
+function rawCode(empId, date) { const d = S.esc[docKey(empId, ymOf(date))]; return (d && d.days && d.days[date.slice(8)]) || ''; }
+// Código com as alterações em prévia (modo automático) aplicadas por cima.
+function code(empId, date, ov) {
+  const k = empId + '|' + date;
+  if (ov && k in ov) return ov[k];
+  if (k in S.pending) return S.pending[k];
+  return rawCode(empId, date);
+}
+// Durante a sugestão automática, o mês do escopo conta como iniciado para todos (igual ao resultado depois de aplicar).
+const started = (empId, ym) => !!S.esc[docKey(empId, ym)] || !!(S.simStart && S.simStart.ym === ym && S.simStart.ids.has(empId));
+const empById = id => S.emps.find(e => e.id === id) || null;
+const secById = id => S.sectors.find(s => s.id === id) || null;
+const activeEmps = () => S.emps.filter(e => e.active !== false);
+function holidaysOf(y) {
+  const custom = S.hols.filter(h => h.date && h.date.startsWith(String(y)));
+  const off = new Set(custom.filter(h => h.ignore).map(h => h.date));
+  const list = nationalHolidays(y).filter(h => !off.has(h.date) && !custom.some(c => c.date === h.date && !c.ignore));
+  return list.concat(custom.filter(h => !h.ignore)).sort((a, b) => a.date.localeCompare(b.date));
+}
+const holCache = {};
+function holOn(date) { const y = +date.slice(0, 4); if (!holCache[y]) holCache[y] = holidaysOf(y); return holCache[y].find(h => h.date === date) || null; }
+const resetHolCache = () => { for (const k of Object.keys(holCache)) delete holCache[k]; };
+function sunEvery(e) { const s = secById(e.sectorId); const v = e.sunEvery === '' || e.sunEvery == null ? (s ? s.sunEvery : 0) : e.sunEvery; return +v || 0; }
+function minFor(sec, date) { if (!sec) return 0; if (wd(date) === 6 && sec.minDom !== '' && sec.minDom != null) return +sec.minDom || 0; return +sec.min || 0; }
+const ruleMode = r => (S.cfg.rules || {})[r] || DEF_RULES[r];
+
+// ======================= Regras =======================
+function requiredRests(abs) { return abs > 0 ? Math.round(2 * Math.max(0, 7 - abs) / 7) : 2; }
+// Folgas compensatórias: cada "FT" gera um crédito; cada "FF" usa o crédito mais antigo anterior a ela.
+function compLedger(empId, ov) {
+  const ft = [], cc = [];
+  for (const [k, d] of Object.entries(S.esc)) {
+    if (!k.startsWith(empId + '_')) continue;
+    const ym = k.slice(empId.length + 1);
+    for (const dd of Object.keys(d.days || {})) { const date = ym + '-' + dd; const c = code(empId, date, ov); if (c === 'FT') ft.push(date); else if (c === 'C') cc.push(date); }
+  }
+  if (ov) for (const [k, c] of Object.entries(ov)) { const [e, date] = k.split('|'); if (e !== empId) continue; if (c === 'FT' && !ft.includes(date)) ft.push(date); if (c === 'C' && !cc.includes(date)) cc.push(date); }
+  for (const [k, c] of Object.entries(S.pending)) { const [e, date] = k.split('|'); if (e !== empId) continue; if (c === 'FT' && !ft.includes(date)) ft.push(date); if (c === 'C' && !cc.includes(date)) cc.push(date); }
+  const fts = [...new Set(ft)].filter(d => code(empId, d, ov) === 'FT').sort(), ccs = [...new Set(cc)].filter(d => code(empId, d, ov) === 'C').sort();
+  const used = new Set(), pairs = [], orphan = [];
+  for (const c of ccs) { const f = fts.find(x => x < c && !used.has(x)); if (f) { used.add(f); pairs.push([f, c]); } else orphan.push(c); }
+  const prazo = +S.cfg.compPrazo || 0;
+  const pending = fts.filter(f => !used.has(f)).map(f => ({ date: f, due: prazo ? add(f, prazo) : null }));
+  return { pending, orphan, pairs };
+}
+
+// Violações de uma pessoa numa janela. Chave estável para comparar antes e depois de uma alteração.
+function violations(e, from, to, ov) {
+  const out = new Map(); const c = d => code(e.id, d, ov); const st = d => started(e.id, ymOf(d)) || hasOv(ov, e.id, d);
+  // 5x2 por semana de referência (segunda a domingo)
+  for (let ws = wstart(from); ws <= to; ws = add(ws, 7)) {
+    const days = range(ws, add(ws, 6));
+    const known = days.every(st); if (!days.some(st)) continue;
+    const codes = days.map(c); const rests = codes.filter(isRest).length, abs = codes.filter(isAbs).length, req = requiredRests(abs);
+    const maxR = abs ? Math.max(req, Math.min(2, 7 - abs)) : 2;
+    const tgt = days.filter(d => d >= from && d <= to);
+    if (rests > maxR) out.set('semana|' + ws, { rule: 'semana', dates: days.filter(d => isRest(c(d))), text: `Semana de ${fd(ws)} a ${fd(add(ws, 6))}: ${rests} folgas semanais e ${codes.filter(isWork).length} dias de trabalho. O 5x2 prevê ${maxR} folga${maxR === 1 ? '' : 's'} semanal(is).`, sev: rests - maxR });
+    else if (known && rests < req) out.set('semana|' + ws, { rule: 'semana', dates: [tgt[tgt.length - 1] || days[6]], text: `Semana de ${fd(ws)} a ${fd(add(ws, 6))}: ${rests} folga${rests === 1 ? '' : 's'} semanal(is); o 5x2 pede ${req}${abs ? ` (com ${abs} dia(s) de férias ou afastamento)` : ''}.`, sev: req - rests });
+  }
+  // Dias seguidos de trabalho
+  const max = +S.cfg.maxConsec || 6; let run = 0, rs = null;
+  const flush = end => { if (run > max) out.set('consec|' + rs, { rule: 'consec', dates: [end], from: rs, to: end, text: `${run} dias seguidos de trabalho, de ${fd(rs)} a ${fd(end)} (limite configurado: ${max}).`, sev: run - max }); run = 0; };
+  for (const d of range(add(from, -14), add(to, 14))) { if (st(d) && isWork(c(d))) { if (!run) rs = d; run++; } else if (run) flush(add(d, -1)); }
+  if (run) flush(add(to, 14));
+  // Domingos
+  const N = sunEvery(e);
+  if (N > 0) {
+    let sun = wstart(from); sun = add(sun, 6 - 7 * (N - 1)); let r = 0;
+    for (; sun <= add(to, 6); sun = add(sun, 7)) {
+      if (!st(sun)) { r = 0; continue; }
+      if (isWork(c(sun))) { r++; if (r >= N && sun >= from && sun <= add(to, 6)) out.set('domingo|' + sun, { rule: 'domingo', dates: [sun], text: `${r} domingos seguidos de trabalho até ${fd(sun)}. Regra: folgar 1 domingo a cada ${N}.`, sev: r - N + 1 }); }
+      else r = 0;
+    }
+  }
+  // Compensações
+  const L = compLedger(e.id, ov);
+  for (const d of L.orphan) if (d >= add(from, -31) && d <= add(to, 31)) out.set('comp|o|' + d, { rule: 'compensacao', dates: [d], text: `Folga compensatória em ${fd(d)} sem feriado trabalhado (FT) pendente antes dela.`, sev: 1 });
+  for (const p of L.pending) if (p.due && p.due < TODAY) out.set('comp|v|' + p.date, { rule: 'compensacao', dates: [p.date], text: `Feriado trabalhado em ${fd(p.date)} sem folga compensatória. O prazo terminou em ${fd(p.due)}.`, sev: 1 });
+  return out;
+}
+const hasOv = (ov, empId, d) => !!ov && (empId + '|' + d) in ov;
+
+function coverage(sec, date, ov) {
+  const emps = activeEmps().filter(e => e.sectorId === sec.id);
+  let work = 0, off = 0, abs = 0;
+  for (const e of emps) { const c = code(e.id, date, ov); if (isWork(c)) work++; else if (isAbs(c)) abs++; else off++; }
+  const min = minFor(sec, date);
+  return { work, off, abs, min, low: min > 0 && work < min, total: emps.length };
+}
+
+// Confere uma lista de alterações antes de gravar. Bloqueios impedem; alertas pedem confirmação.
+function check(changes) {
+  const ov = {}; for (const ch of changes) ov[ch.empId + '|' + ch.date] = ch.next;
+  const res = { block: [], warn: [], info: [], ok: [] };
+  const push = (mode, t) => { if (mode === 'bloquear') res.block.push(t); else if (mode === 'alerta') res.warn.push(t); };
+  const byEmp = {}; for (const ch of changes) (byEmp[ch.empId] = byEmp[ch.empId] || []).push(ch);
+  for (const [empId, list] of Object.entries(byEmp)) {
+    const e = empById(empId); if (!e) continue;
+    const ds = list.map(x => x.date).sort(); const from = add(wstart(ds[0]), -7), to = add(ds[ds.length - 1], 13);
+    const before = violations(e, from, to), after = violations(e, from, to, ov);
+    for (const [k, v] of after) { const b = before.get(k); if (!b || v.sev > b.sev) push(ruleMode(v.rule), (changes.length > 1 || Object.keys(byEmp).length > 1 ? e.name.split(' ')[0] + ': ' : '') + v.text); }
+    for (const [k, v] of before) if (!after.get(k)) res.ok.push('Resolve: ' + v.text);
+    for (const ch of list) {
+      const prev = code(empId, ch.date);
+      if (isAbs(prev) && !isAbs(ch.next)) push(ruleMode('ausencia'), `${fdw(ch.date)} está como ${CODES[prev].lb.toLowerCase()}. ${ch.next === '' ? 'Marcar trabalho' : 'Marcar ' + CODES[ch.next].lb.toLowerCase()} substitui esse registro.`);
+      if (prev === 'C' && ch.next !== 'C') res.warn.push(`${fdw(ch.date)} era folga compensatória; o feriado trabalhado volta a ficar pendente.`);
+      if (prev === 'FT' && ch.next !== 'FT') { const L = compLedger(empId); if (L.pairs.some(p => p[0] === ch.date)) res.warn.push(`O feriado de ${fd(ch.date)} já foi compensado; a folga compensatória correspondente fica sem crédito.`); }
+      if (ch.next === 'C' && !compLedger(empId).pending.some(p => p.date < ch.date)) push(ruleMode('compensacao'), `${e.name.split(' ')[0]} não tem feriado trabalhado (FT) pendente antes de ${fd(ch.date)}.`);
+      if (ch.date < TODAY) res.info.push(`${fd(ch.date)} já passou; a alteração fica registrada no histórico.`);
+    }
+  }
+  const seen = new Set();
+  for (const ch of changes) {
+    const e = empById(ch.empId); const sec = e && secById(e.sectorId); if (!sec) continue; const k = sec.id + ch.date; if (seen.has(k)) continue; seen.add(k);
+    const c0 = coverage(sec, ch.date), c1 = coverage(sec, ch.date, ov);
+    if (c1.low && c1.work < c0.work) push(ruleMode('cobertura'), `${sec.name} fica com ${c1.work} pessoa${c1.work === 1 ? '' : 's'} trabalhando em ${fdw(ch.date)}; o mínimo é ${c1.min}.`);
+    else if (c0.low && !c1.low) res.ok.push(`${sec.name} volta ao mínimo de ${c1.min} em ${fd(ch.date)}.`);
+  }
+  res.block = [...new Set(res.block)]; res.warn = [...new Set(res.warn)]; res.info = [...new Set(res.info)]; res.ok = [...new Set(res.ok)];
+  return res;
+}
+// Alternativas: outros dias da mesma semana em que a folga não deixa o setor abaixo do mínimo.
+function alternatives(empId, date, next) {
+  if (!isRest(next)) return [];
+  const e = empById(empId); const sec = secById(e.sectorId); const out = [];
+  for (const d of range(wstart(date), add(wstart(date), 6))) {
+    if (d === date || code(empId, d) !== '' || holOn(d)) continue;
+    const nx = wd(d) === 6 ? 'D' : 'F';
+    const ov = { [empId + '|' + d]: nx }; const cv = sec ? coverage(sec, d, ov) : { low: false, work: 0, min: 0 };
+    if (cv.low) continue;
+    const r = check([{ empId, date: d, next: nx }]); if (r.block.length) continue;
+    out.push({ date: d, next: nx, spare: cv.work - cv.min, clean: !r.warn.length });
+  }
+  return out.sort((a, b) => b.clean - a.clean || b.spare - a.spare).slice(0, 3);
+}
+
+// Alertas do mês para a tela (marcas nas células e painel de alertas).
+function monthAlerts(ov) {
+  return { list: [], marks: {} }; // Escala livre: sem alertas nem regras.
+}
+function monthAlertsOld(ov) {
+  const first = iso(S.y, S.m, 1), last = iso(S.y, S.m, dim(S.y, S.m)), ym = first.slice(0, 7);
+  const list = [], marks = {};
+  const emps = visibleEmps();
+  for (const e of emps) {
+    if (!started(e.id, ym) && !Object.keys(ov || {}).some(k => k.startsWith(e.id + '|'))) { list.push({ sev: 'info', rule: 'inicio', empId: e.id, date: first, text: `${e.name}: nenhuma folga definida em ${MESES[S.m - 1]}.` }); continue; }
+    for (const [k, v] of violations(e, first, last, ov)) {
+      const mode = ruleMode(v.rule); if (mode === 'off') continue;
+      const ds = v.dates.filter(d => d >= first && d <= last);
+      list.push({ sev: mode === 'bloquear' ? 'bad' : 'warn', rule: v.rule, empId: e.id, date: ds[0] || v.dates[0], text: `${e.name}: ${v.text}` });
+      for (const d of ds) (marks[e.id + '|' + d] = marks[e.id + '|' + d] || []).push(v.text);
+    }
+    const L = compLedger(e.id, ov);
+    for (const p of L.pending) if (!(p.due && p.due < TODAY)) list.push({ sev: 'info', rule: 'compensacao', empId: e.id, date: p.date, text: `${e.name}: feriado trabalhado em ${fd(p.date)} aguardando folga compensatória${p.due ? ` (prazo ${fd(p.due)})` : ''}.` });
+    for (const d of range(first, last)) { const h = holOn(d); if (h && code(e.id, d, ov) === '' ) list.push({ sev: 'info', rule: 'feriado', empId: e.id, date: d, text: `${e.name}: defina se trabalha no feriado de ${fd(d)} (${h.name}): FT ou X.` }); }
+  }
+  for (const sec of visibleSectors()) {
+    if (!(+sec.min || +sec.minDom)) continue;
+    for (const d of range(first, last)) { const cv = coverage(sec, d, ov); if (cv.low && ruleMode('cobertura') !== 'off') list.push({ sev: ruleMode('cobertura') === 'bloquear' ? 'bad' : 'warn', rule: 'cobertura', sectorId: sec.id, date: d, text: `${sec.name}: ${cv.work} trabalhando em ${fdw(d)}; mínimo ${cv.min}.` }); }
+  }
+  const rank = { bad: 0, warn: 1, info: 2 };
+  list.sort((a, b) => rank[a.sev] - rank[b.sev] || a.date.localeCompare(b.date));
+  return { list, marks };
+}
+function visibleSectors() { return S.sectors.filter(s => S.sector === 'all' || s.id === S.sector).sort((a, b) => (a.name || '').localeCompare(b.name || '', 'pt-BR')); }
+function visibleEmps() {
+  const q = norm(S.q); const secs = new Set(visibleSectors().map(s => s.id));
+  return activeEmps().filter(e => secs.has(e.sectorId) && (!q || norm(e.name).includes(q) || norm(e.chapa).includes(q) || norm(e.cargo).includes(q)));
+}
+
+// ======================= Gravação =======================
+const queues = {};
+function writeDoc(key) {
+  const ref = S.db.collection('escala').doc(key);
+  const run = async () => { const d = S.esc[key]; await ref.set({ empId: d.empId, ym: d.ym, days: { ...(d.days || {}) }, updatedAt: new Date().toISOString() }); };
+  const p = (queues[key] || Promise.resolve()).then(run, run); queues[key] = p.catch(() => {}); return p;
+}
+// Aplica alterações: muda a tela na hora, grava por pessoa e mês, e volta atrás se a gravação falhar.
+async function applyChanges(changes, label, opts = {}) {
+  if (!S.db || !S.canWrite) { toast('Sem permissão para alterar ou sem conexão com o armazenamento. Nada foi salvo.', true); return false; }
+  const docs = {}; const undoRec = [];
+  for (const ch of changes) {
+    const ym = ymOf(ch.date); const key = docKey(ch.empId, ym); const prev = rawCode(ch.empId, ch.date);
+    if (!S.esc[key]) S.esc[key] = { empId: ch.empId, ym, days: {}, local: true };
+    const days = S.esc[key].days = { ...(S.esc[key].days || {}) };
+    if (ch.next) days[ch.date.slice(8)] = ch.next; else delete days[ch.date.slice(8)];
+    docs[key] = true; undoRec.push({ empId: ch.empId, date: ch.date, prev, next: ch.next });
+  }
+  for (const id of opts.start || []) { const key = docKey(id, opts.ym); if (!S.esc[key]) { S.esc[key] = { empId: id, ym: opts.ym, days: {}, local: true }; docs[key] = true; } }
+  if (!opts.isUndo && undoRec.length) { S.undo.push({ label, changes: undoRec }); if (S.undo.length > 40) S.undo.shift(); }
+  S.saving++; S.saveErr = null; if (changes.length === 1) S.flash = changes[0].empId + '|' + changes[0].date; render();
+  const failed = [];
+  await Promise.all(Object.keys(docs).map(k => writeDoc(k).catch(err => failed.push({ k, err }))));
+  S.saving--;
+  if (failed.length) {
+    // Volta ao valor anterior só nos documentos que não gravaram.
+    const bad = new Set(failed.map(f => f.k));
+    for (const u of undoRec) { const key = docKey(u.empId, ymOf(u.date)); if (!bad.has(key)) continue; const days = S.esc[key].days; if (u.prev) days[u.date.slice(8)] = u.prev; else delete days[u.date.slice(8)]; }
+    for (const k of bad) if (S.esc[k] && S.esc[k].local && !Object.keys(S.esc[k].days).length) delete S.esc[k];
+    if (!opts.isUndo) S.undo.pop();
+    S.saveErr = errMsg(failed[0].err); render(); toast('Não foi salvo: ' + S.saveErr, true); return false;
+  }
+  log({ acao: opts.isUndo ? 'desfazer' : 'alteracao', descricao: label, qtd: changes.length, dias: undoRec.slice(0, 40).map(u => `${u.empId}|${u.date}|${u.prev || 'T'}>${u.next || 'T'}`), obs: opts.note || '' });
+  render(); return true;
+}
+function errMsg(e) {
+  const c = e && e.code;
+  return c === 'not_granted' || c === 'revoked' ? 'você não tem permissão para alterar esta escala.' : c === 'unavailable' ? 'sem conexão. Tente de novo em instantes.' : c === 'resource_exhausted' ? 'muitas alterações seguidas. Aguarde alguns segundos.' : c === 'quota_exceeded' ? 'o armazenamento está cheio.' : (e && e.message) || 'erro desconhecido.';
+}
+function log(ev) { if (!S.db) return; S.db.collection('historico').add({ ...ev, em: new Date().toISOString(), por: S.myId || null }).catch(() => {}); }
+async function undoLast() {
+  const u = S.undo[S.undo.length - 1]; if (!u) return toast('Não há alteração para desfazer.');
+  const changes = u.changes.slice().reverse().map(x => ({ empId: x.empId, date: x.date, next: x.prev }));
+  const stale = u.changes.filter(x => rawCode(x.empId, x.date) !== x.next);
+  if (stale.length) return toast('Não dá para desfazer: esses dias foram alterados de novo depois. Confira a escala.', true);
+  S.undo.pop();
+  const ok = await applyChanges(changes, 'Desfazer: ' + u.label, { isUndo: true });
+  if (ok) toast('Desfeito: ' + u.label + '.'); else S.undo.push(u);
+}
+
+// ======================= Ícones =======================
+const IC = {
+  left: '<path d="M15 18l-6-6 6-6"/>', right: '<path d="M9 18l6-6-6-6"/>', search: '<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',
+  undo: '<path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>', pdf: '<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>',
+  x: '<path d="M18 6L6 18M6 6l12 12"/>', check: '<path d="M20 6L9 17l-5-5"/>', wand: '<path d="M15 4V2M15 16v-2M8 9h2M20 9h2M17.8 11.8L19 13M15 9h0M17.8 6.2L19 5M3 21l9-9M12.2 6.2L11 5"/>',
+  alert: '<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>', cal: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>', upload: '<path d="M12 15V3M7 8l5-5 5 5M5 21h14"/>', erase: '<path d="M20 20H9L4 15a2 2 0 0 1 0-2.8L13.2 3a2 2 0 0 1 2.8 0L21 8a2 2 0 0 1 0 2.8L12 20"/><path d="M8 11l6 6"/>', expand: '<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>', shrink: '<path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7"/>', rotate: '<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>', edit: '<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>', csv: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h8"/>'
+};
+const icon = (n, s = 18, w = 2.2) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[n]}</svg>`;
+
+// ======================= Tela inicial =======================
+function render() {
+  const app = document.getElementById('app');
+  document.getElementById('storeName').textContent = S.cfg.storeName ? S.cfg.storeName + (S.sector === 'all' ? ' · Todos os setores' : ' · ' + ((secById(S.sector) || {}).name || '')) : 'Escala';
+  if (!S.ready) { app.innerHTML = '<p class="muted">Carregando a escala…</p>'; return; }
+  if (S.sector !== 'all' && !secById(S.sector)) S.sector = 'all';
+  const prevScroll = (() => { const w = document.getElementById('gwrap'); return w ? [w.scrollLeft, w.scrollTop] : null; })();
+  const ov = S.preview ? S.preview.ov : null;
+  const al = monthAlerts(ov);
+  applyFullClasses();
+  app.innerHTML = S.full ? fullBar() + body(al, ov) : topBar() + statusStrip(al) + body(al, ov) + (S.view === 'heat' ? '' : legend());
+  const w = document.getElementById('gwrap');
+  if (w && prevScroll) { w.scrollLeft = prevScroll[0]; w.scrollTop = prevScroll[1]; }
+  else if (w && !prevScroll) scrollToToday();
+  if (S.flash) setTimeout(() => { S.flash = null; }, 1200);
+  const cur = document.querySelector('td.c[tabindex="0"]'); if (cur && S.focusGrid) { cur.focus({ preventScroll: true }); S.focusGrid = false; }
+}
+function scrollToToday() {
+  const w = document.getElementById('gwrap'); if (!w) return;
+  const th = w.querySelector(`th[data-date="${TODAY}"]`); if (!th) return;
+  w.scrollLeft = Math.max(0, th.offsetLeft - w.querySelector('thead .nm').offsetWidth - (w.querySelector('thead .cp') || { offsetWidth: 0 }).offsetWidth - 64);
+}
+const syncState = () => !S.db ? ['err', 'Sem armazenamento: nada é salvo'] : S.saving ? ['busy', 'Salvando…'] : S.saveErr ? ['err', 'Última alteração não salva'] : ['ok', S.local ? 'Salvo neste aparelho' : 'Tudo salvo'];
+const syncHtml = sync => `<button class="sync ${sync[0]}" data-act="syncInfo" aria-live="polite">${sync[0] === 'busy' ? '<span class="spin"></span>' : icon(sync[0] === 'ok' ? 'check' : 'alert', 14, 2.6)} ${sync[1]}</button>`;
+const sectorSelect = () => `<label class="sr" for="fSector">Setor</label><select class="ctl" id="fSector" data-ch="sector"><option value="all">Todos os setores</option>${S.sectors.slice().sort((a, b) => a.name.localeCompare(b.name, 'pt-BR')).map(s => `<option value="${esc(s.id)}" ${S.sector === s.id ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}</select>`;
+// ---------- Tela cheia ----------
+const isPhone = () => Math.min(innerWidth, innerHeight) <= 520;
+const isRot = () => S.full && S.rotPref && isPhone() && innerHeight > innerWidth;
+function setVP() { const r = document.documentElement.style; r.setProperty('--fw', innerWidth + 'px'); r.setProperty('--fh', innerHeight + 'px'); }
+function applyFullClasses() { setVP(); document.body.classList.toggle('full', S.full); document.body.classList.toggle('rot', isRot()); }
+async function enterFull() {
+  S.full = true; S.focusGrid = true; render();
+  // Tela cheia do navegador e trava na horizontal são opcionais: onde o aparelho não deixa, a grade gira sozinha.
+  try { const el = document.documentElement; if (el.requestFullscreen && !document.fullscreenElement) { await el.requestFullscreen({ navigationUI: 'hide' }); S.fsOwned = true; } } catch (e) {}
+  try { if (screen.orientation && screen.orientation.lock) await screen.orientation.lock('landscape'); } catch (e) {}
+  setTimeout(() => { if (S.full) render(); }, 250);
+}
+function exitFull() {
+  S.full = false; closeMenu(false);
+  try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) {}
+  if (document.fullscreenElement && S.fsOwned) document.exitFullscreen().catch(() => {});
+  S.fsOwned = false; render();
+}
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && S.fsOwned) { S.fsOwned = false; if (S.full) { S.full = false; closeMenu(false); render(); } } });
+function fullBar() {
+  const can = S.canWrite && S.db;
+  return `<div class="fbar" role="toolbar" aria-label="Escala em tela cheia">
+    <button class="ibtn" data-act="month" data-n="-1" aria-label="Mês anterior">${icon('left', 20, 2.4)}</button>
+    <h1 class="mtitle" aria-live="polite">${cap(MESES[S.m - 1])} ${S.y}</h1>
+    <button class="ibtn" data-act="month" data-n="1" aria-label="Próximo mês">${icon('right', 20, 2.4)}</button>
+    ${sectorSelect()}
+    <span class="grow"></span>
+    ${can ? `<button class="btn" data-act="undo" ${S.undo.length && !S.saving ? '' : 'disabled'} aria-label="Desfazer a última alteração">${icon('undo', 16)}<span class="hide-sm">Desfazer</span></button>` : ''}
+    ${syncHtml(syncState())}
+    ${isPhone() ? `<button class="btn" data-act="rotate" aria-pressed="${isRot()}" title="Girar a grade">${icon('rotate', 16)} Girar</button>` : ''}
+    <button class="btn btn-pri fexit" data-act="fullExit" title="Sair da tela cheia (Esc)">${icon('shrink', 16)} Sair</button>
+  </div>`;
+}
+function topBar() {
+  const ym = `${S.y}-${pad(S.m)}`; const isNow = S.y === +TODAY.slice(0, 4) && S.m === +TODAY.slice(5, 7);
+  const sync = syncState();
+  const can = S.canWrite && S.db;
+  return `<section class="top" aria-label="Mês e filtros">
+    <div class="mnav"><button class="ibtn" data-act="month" data-n="-1" aria-label="Mês anterior">${icon('left', 22, 2.4)}</button>
+      <h1 class="mtitle" aria-live="polite">${cap(MESES[S.m - 1])} ${S.y}</h1>
+      <button class="ibtn" data-act="month" data-n="1" aria-label="Próximo mês">${icon('right', 22, 2.4)}</button></div>
+    <label class="sr" for="fMonth">Escolher mês</label><input class="ctl num" type="month" id="fMonth" value="${ym}" data-ch="month">
+    ${isNow ? '' : `<button class="link" data-act="today">Mês atual</button>`}
+  </section>
+  <section class="tools" aria-label="Ferramentas">
+    <div class="seg" role="group" aria-label="Visualização"><button data-act="view" data-v="grid" aria-pressed="${S.view !== 'heat'}">Escala</button><button data-act="view" data-v="heat" aria-pressed="${S.view === 'heat'}">Mapa de calor</button></div>
+    ${S.view === 'heat' ? `<div class="seg" role="group" aria-label="Agrupar por"><button data-act="heatMode" data-v="dia" aria-pressed="${S.heatMode !== 'semana'}">Por dia</button><button data-act="heatMode" data-v="semana" aria-pressed="${S.heatMode === 'semana'}">Por semana</button></div>` : ''}
+    ${sectorSelect()}
+    <div class="search"><label class="sr" for="fQ">Buscar colaborador</label>${icon('search', 17)}<input class="ctl" id="fQ" type="search" placeholder="Nome, chapa ou cargo" value="${esc(S.q)}" data-in="q" autocomplete="off"></div>
+    ${can ? `<button class="btn" data-act="undo" ${S.undo.length && !S.saving ? '' : 'disabled'} title="Desfazer a última alteração (Ctrl+Z)">${icon('undo')} Desfazer</button><button class="btn" data-act="clear" title="Apagar as marcações do mês, de todos ou de um colaborador">${icon('erase')} Limpar escala</button>` : ''}
+    <button class="btn" data-act="pdf" title="Baixar a escala do mês em PDF, A4 deitado">${icon('pdf')} PDF</button>
+    <button class="btn hide-sm" data-act="csv" title="Baixar a escala do mês em planilha CSV">${icon('csv')} CSV</button>
+    ${can ? `<button class="btn" data-act="imp" title="Importar escala ou equipe de uma planilha CSV">${icon('upload')} Importar CSV</button>` : ''}
+    <button class="btn" data-act="full" title="Abrir a escala em tela cheia, na horizontal">${icon('expand')} Tela cheia</button>
+    ${syncHtml(sync)}
+  </section>`;
+}
+function statusStrip(al) {
+  const bad = al.list.filter(a => a.sev !== 'info'); const comps = al.list.filter(a => a.rule === 'compensacao');
+  const secs = visibleSectors(); const emps = visibleEmps();
+  let w = 0, f = 0, a = 0; for (const e of emps) { const c = code(e.id, TODAY); if (isWork(c)) w++; else if (isAbs(c)) a++; else f++; }
+  const lowToday = secs.filter(s => coverage(s, TODAY).low).map(s => s.name);
+  return `<div class="strip">
+
+
+    ${emps.length ? `<span>${icon('cal', 15)} <b>Hoje, ${fdw(TODAY)}:</b> ${w} trabalhando · ${f} de folga${a ? ` · ${a} ausente${a === 1 ? '' : 's'}` : ''}</span>` : ''}
+  </div>`;
+}
+// ======================= Mapa de calor =======================
+// Laranja (menos gente) → amarelo → verde (mais gente), em proporção à equipe da linha.
+function heatStyle(n, total) {
+  if (!total || n <= 0) return 'background:var(--surface);color:var(--muted)';
+  const r = Math.max(0, Math.min(1, n / total));
+  const stops = [[233, 95, 12], [242, 184, 36], [46, 158, 91]]; // laranja, amarelo, verde
+  const t = r * 2, i = Math.min(1, Math.floor(t)), f = t - i;
+  const c = stops[i].map((v, k) => Math.round(v + (stops[i + 1][k] - v) * f));
+  const dark = (c[0] * 299 + c[1] * 587 + c[2] * 114) / 1000 > 150;
+  return `background:rgb(${c.join(',')});color:${dark ? '#1E2227' : '#fff'}`;
+}
+function heatGroups() {
+  const secs = visibleSectors().map(s => ({ name: s.name, list: activeEmps().filter(e => e.sectorId === s.id) })).filter(g => g.list.length);
+  if (S.sector === 'all' && secs.length > 1) secs.push({ name: 'Loja toda', list: secs.flatMap(g => g.list), total: true });
+  return secs;
+}
+const workCount = (list, d) => list.filter(e => isWork(code(e.id, d))).length;
+function heatView() {
+  const first = iso(S.y, S.m, 1), last = iso(S.y, S.m, dim(S.y, S.m)); const days = range(first, last);
+  const groups = heatGroups();
+  if (!groups.length) return `<section class="empty"><h2>Nenhum colaborador ativo</h2><p class="note">Cadastre a equipe para ver o mapa de calor.</p></section>`;
+  const scale = `<div class="hscale"><span>Menos gente (laranja)</span><span class="bar">${[0.1, 0.25, 0.4, 0.55, 0.7, 0.85, 1].map(r => `<i style="${heatStyle(r * 20, 20)}"></i>`).join('')}</span><span>Equipe toda trabalhando (verde)</span><span>· o número é quantas pessoas trabalham</span></div>`;
+  const rowHead = g => `<th class="rh" scope="row">${esc(g.name)}<small>${g.list.length} pessoa${g.list.length === 1 ? '' : 's'}</small></th>`;
+  const tip = (g, d, n) => `${g.name}, ${WD3[wd(d)]} ${fd(d)}: ${n} de ${g.list.length} trabalhando${holOn(d) ? ' (feriado: ' + holOn(d).name + ')' : ''}`;
+  if (S.heatMode !== 'semana') {
+    const head = `<tr><th class="rh" scope="col">Setor</th>${days.map(d => { const h = holOn(d); return `<th scope="col" class="${wd(d) === 6 ? 'sun' : ''}${h ? ' hol' : ''}" title="${esc(cap(WDL[wd(d)]))}, ${fd(d)}${h ? ' · Feriado: ' + esc(h.name) : ''}"><span class="wl">${WL[wd(d)]}</span><span class="dn">${+d.slice(8)}</span></th>`; }).join('')}<th scope="col">Média</th></tr>`;
+    const rows = groups.map(g => { const ns = days.map(d => workCount(g.list, d)); const avg = ns.reduce((a, b) => a + b, 0) / ns.length;
+      return `<tr class="${g.total ? 'tot' : ''}">${rowHead(g)}${ns.map((n, i) => `<td class="hc" style="${heatStyle(n, g.list.length)}" title="${esc(tip(g, days[i], n))}">${n}</td>`).join('')}<td class="avg" title="Média de pessoas trabalhando por dia no mês">${avg.toFixed(1).replace('.', ',')}</td></tr>`; }).join('');
+    return `<section class="hsec"><h2>Pessoas trabalhando por dia · ${cap(MESES[S.m - 1])} ${S.y}</h2>${scale}<div class="hwrap"><table class="hm" aria-label="Mapa de calor por dia"><thead>${head}</thead><tbody>${rows}</tbody></table></div></section>`;
+  }
+  // Por semana: semanas de segunda a domingo que tocam o mês.
+  const weeks = []; for (let ws = wstart(first); ws <= last; ws = add(ws, 7)) weeks.push(ws);
+  const inM = d => d >= first && d <= last;
+  const wlabel = ws => { const a = [ws, add(ws, 6)].map(d => inM(d) ? d : (d < first ? first : last)); return `${fd(a[0])} a ${fd(a[1])}`; };
+  const head1 = `<tr><th class="rh" scope="col">Setor</th>${weeks.map((ws, i) => `<th scope="col" title="Semana de ${fd(ws)} a ${fd(add(ws, 6))}"><span class="wl">Semana ${i + 1}</span><span class="dn" style="font-size:12px">${wlabel(ws)}</span></th>`).join('')}</tr>`;
+  const rows1 = groups.map(g => `<tr class="${g.total ? 'tot' : ''}">${rowHead(g)}${weeks.map(ws => { const ds = range(ws, add(ws, 6)).filter(inM); const sum = ds.reduce((t, d) => t + workCount(g.list, d), 0); const avg = ds.length ? sum / ds.length : 0;
+    return `<td class="hc" style="${heatStyle(avg, g.list.length)};min-width:92px" title="${esc(g.name)}, ${wlabel(ws)}: média de ${avg.toFixed(1).replace('.', ',')} pessoas por dia, ${sum} dia${sum === 1 ? '' : 's'} de trabalho no total">${avg.toFixed(1).replace('.', ',')}<span style="display:block;font-size:10.5px;font-weight:700;opacity:.85">${sum} dia${sum === 1 ? '' : 's'} trab.</span></td>`; }).join('')}</tr>`).join('');
+  const scope = groups[groups.length - 1]; // Loja toda ou o setor escolhido
+  const head2 = `<tr><th class="rh" scope="col">Semana</th>${WD3.map((w, i) => `<th scope="col" class="${i === 6 ? 'sun' : ''}"><span class="dn">${cap(w)}</span></th>`).join('')}<th scope="col">Média</th></tr>`;
+  const rows2 = weeks.map((ws, i) => { const ds = range(ws, add(ws, 6)); const vals = ds.filter(inM).map(d => workCount(scope.list, d)); const avg = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+    return `<tr><th class="rh" scope="row">Semana ${i + 1}<small>${wlabel(ws)}</small></th>${ds.map(d => inM(d) ? (n => `<td class="hc" style="${heatStyle(n, scope.list.length)}" title="${esc(tip(scope, d, n))}">${n}<span style="display:block;font-size:10px;font-weight:700;opacity:.8">${fd(d)}</span></td>`)(workCount(scope.list, d)) : '<td class="hc out"></td>').join('')}<td class="avg">${avg.toFixed(1).replace('.', ',')}</td></tr>`; }).join('');
+  return `<section class="hsec"><h2>Média de pessoas trabalhando por dia, em cada semana · ${cap(MESES[S.m - 1])} ${S.y}</h2>${scale}<div class="hwrap"><table class="hm" aria-label="Mapa de calor por semana"><thead>${head1}</thead><tbody>${rows1}</tbody></table></div></section>
+    <section class="hsec"><h2>${esc(scope.name)}: dia a dia de cada semana</h2><div class="hwrap"><table class="hm" aria-label="Mapa de calor por dia da semana"><thead>${head2}</thead><tbody>${rows2}</tbody></table></div></section>`;
+}
+function body(al, ov) {
+  if (!S.sectors.length || !S.emps.length) {
+    if (!S.canAdmin) return `<section class="empty"><h2>A escala ainda não tem equipe cadastrada</h2><p class="note">Peça a quem administra o app para cadastrar setores e colaboradores.</p></section>`;
+    return `<section class="empty"><h2>Comece pela equipe</h2><p class="note">Cadastre o nome da loja, os setores (com o mínimo de pessoas por dia) e os colaboradores. Depois disso a escala do mês aparece aqui e cada dia pode ser alterado com um toque.</p><button class="btn btn-pri" data-act="team">${icon('plus')} Cadastrar equipe</button></section>`;
+  }
+  if (S.view === 'heat') return heatView();
+  const emps = visibleEmps();
+  if (!emps.length) return `<section class="empty"><h2>Ninguém encontrado</h2><p class="note">${S.q ? 'Nenhum colaborador com essa busca.' : 'Este setor não tem colaboradores ativos.'}</p>${S.q ? '<button class="btn" data-act="clearQ">Limpar busca</button>' : ''}</section>`;
+  return grid(emps, al.marks, ov);
+}
+function grid(emps, marks, ov) {
+  const first = iso(S.y, S.m, 1), last = iso(S.y, S.m, dim(S.y, S.m)); const days = range(first, last); const ym = first.slice(0, 7);
+  if (!S.cursor || !emps.some(e => S.cursor.startsWith(e.id + '|')) || ymOf(S.cursor.split('|')[1]) !== ym) S.cursor = emps[0].id + '|' + (days.includes(TODAY) ? TODAY : first);
+  const head = `<tr><th class="nm" scope="col">Colaborador</th><th class="cp" scope="col">Chapa</th>${days.map(d => { const h = holOn(d); return `<th scope="col" class="d${wd(d) === 6 ? ' sun' : ''}${h ? ' hol' : ''}${d === TODAY ? ' today' : ''}" data-date="${d}" title="${esc(cap(WDL[wd(d)]))}, ${fd(d)}${h ? ' · Feriado: ' + esc(h.name) : ''}"><span class="wl">${WL[wd(d)]}</span><span class="dn">${+d.slice(8)}</span></th>`; }).join('')}<th class="tot first" scope="col" title="Dias de trabalho no mês"><b>T</b>trab.</th><th class="tot" scope="col" title="Folgas semanais e dominicais no mês"><b>F</b>folgas</th><th class="tot" scope="col" title="Domingos de folga no mês"><b>D</b>dom.</th><th class="tot" scope="col" title="Folgas compensatórias pendentes"><b>FF</b>pend.</th></tr>`;
+  let rows = '';
+  for (const sec of visibleSectors()) {
+    const list = emps.filter(e => e.sectorId === sec.id).sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+    if (!list.length) continue;
+    rows += `<tr class="sec"><th colspan="2" scope="rowgroup">${esc(sec.name)} <span>· ${list.length} pessoa${list.length === 1 ? '' : 's'}</span></th><td colspan="${days.length + 4}"></td></tr>`;
+    for (const e of list) {
+      const st = started(e.id, ym) || Object.keys(ov || {}).some(k => k.startsWith(e.id + '|'));
+      let tT = 0, tF = 0, tD = 0;
+      let r = `<tr><th class="nm" scope="row"><button class="nmb" data-act="emp" data-id="${esc(e.id)}" title="Abrir detalhes de ${esc(e.name)}"><span class="n1">${esc(e.name)}</span>${e.cargo || e.chapa ? `<span class="n2">${esc([e.cargo, gNarrow() && e.chapa ? 'Chapa ' + e.chapa : ''].filter(Boolean).join(' · '))}</span>` : ''}</button></th><td class="cp">${esc(e.chapa || '')}</td>`;
+      for (const d of days) {
+        const k = e.id + '|' + d; const c = code(e.id, d, ov); const C = CODES[c] || CODES[''];
+        if (isWork(c)) tT++; if (isRest(c)) tF++; if (wd(d) === 6 && !isWork(c)) tD++;
+        const mk = marks[k]; const pv = ov && k in ov; const h = holOn(d);
+        const lbl = `${e.name}, ${WD3[wd(d)]} ${fd(d)}: ${C.lb}${h ? ' (feriado: ' + h.name + ')' : ''}${!st ? ' (sem folgas definidas no mês)' : ''}${mk ? '. Alerta: ' + mk.join(' ') : ''}${pv ? '. Sugestão' : ''}`;
+        r += `<td role="gridcell" class="c ${C.cls}${mk ? ' bad' : ''}${pv ? ' pv' : ''}${!st ? ' us' : ''}${k in S.pending ? ' saving' : ''}${S.flash === k ? ' flash' : ''}" data-e="${esc(e.id)}" data-d="${d}" tabindex="${S.cursor === k ? 0 : -1}" aria-label="${esc(lbl)}" title="${esc(lbl)}">${esc(C.sh)}</td>`;
+      }
+      const pend = compLedger(e.id, ov).pending.length;
+      r += `<td class="tot first tT">${tT}</td><td class="tot tF">${tF}</td><td class="tot tD">${tD}</td><td class="tot tC">${pend || ''}</td></tr>`;
+      rows += r;
+    }
+    const covs = days.map(d => coverage(sec, d, ov));
+    rows += `<tr class="sum"><th colspan="2" scope="row">Trabalhando</th>${covs.map((c, i) => `<td class="num${holOn(days[i]) ? ' hol' : ''}" title="${fd(days[i])}: ${c.work} trabalhando, ${c.off} de folga${c.abs ? ', ' + c.abs + ' ausente(s)' : ''}">${c.work}</td>`).join('')}<td class="tot first" colspan="4"></td></tr>`;
+    rows += `<tr class="sum"><th colspan="2" scope="row">De folga ou ausente</th>${covs.map((c, i) => `<td class="num${holOn(days[i]) ? ' hol' : ''}">${c.off + c.abs || ''}</td>`).join('')}<td class="tot first" colspan="4"></td></tr>`;
+  }
+  return `<div class="gwrap" id="gwrap"><table class="g" role="grid" aria-label="Escala de ${MESES[S.m - 1]} de ${S.y}" aria-readonly="${!S.canWrite}"><thead>${head}</thead><tbody>${rows}</tbody></table></div>`;
+}
+const gNarrow = () => window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
+function legend() {
+  const hl = holidaysOf(S.y).filter(h => h.date.slice(0, 7) === `${S.y}-${pad(S.m)}`);
+  const sw = (c) => `<span class="sw ${CODES[c].cls}">${esc(CODES[c].sh || '')}</span>`;
+  return `<div class="legend" aria-label="Legenda">${ORDER.map(c => `<span>${sw(c)}${esc(CODES[c].lb)}${c === '' ? ' (em branco)' : ''}</span>`).join('')}<span><span class="sw" style="background:var(--surface);background-image:repeating-linear-gradient(135deg,transparent 0 6px,var(--line) 6px 7px)"></span>Mês sem folgas definidas</span></div>
+  ${hl.length ? `<p class="note"><b>Feriados:</b> ${hl.map(h => fd(h.date) + ' ' + esc(h.name)).join(' · ')}</p>` : ''}
+  ${S.canWrite ? `<p class="note">Toque em um dia para mudar. Toque no nome para ver os detalhes da pessoa. No computador: setas para andar, Enter abre o menu e as letras T, F, D, H, X, C, E e A marcam direto.</p>` : ''}`;
+}
+
+// ======================= Menu da célula =======================
+function openMenu(empId, date, anchor) {
+  const e = empById(empId); if (!e) return;
+  S.menu = { empId, date, step: 'opts', anchor };
+  S.cursor = empId + '|' + date;
+  showMenu();
+}
+function menuOptions(date) { const h = holOn(date), sun = wd(date) === 6; return ORDER.filter(c => { const C = CODES[c]; return !(C.holOnly && !h) && !(C.sunOnly && !sun) && !(C.notSun && sun); }); }
+function menuHtml() {
+  const mn = S.menu; const e = empById(mn.empId); const h = holOn(mn.date); const cur = code(mn.empId, mn.date); const sec = secById(e.sectorId);
+  const L = compLedger(e.id);
+  const head = `<div class="pop-h"><b>${esc(e.name)}</b><span>${esc(cap(WDL[wd(mn.date)]))}, ${fd(mn.date)}/${mn.date.slice(0, 4)}${sec ? ' · ' + esc(sec.name) : ''}</span>${h ? `<span><span class="pill warn">Feriado: ${esc(h.name)}</span></span>` : ''}<span>Agora: <b>${esc(CODES[cur].lb)}</b></span></div>`;
+  if (!S.canWrite || !S.db) return head + `<p class="note">${S.db ? 'Você pode consultar a escala, mas só quem tem permissão de edição altera os dias.' : 'Sem conexão com o armazenamento: alterações estão bloqueadas.'}</p><div class="acts"><button class="btn" data-act="closeMenu">Fechar</button></div>`;
+  if (mn.step === 'review') {
+    const r = mn.res; const li = (arr, c) => arr.map(t => `<li class="${c}">${esc(t)}</li>`).join('');
+    const alts = mn.alts || [];
+    return head + `<div>Mudar para: <b>${esc(CODES[mn.next].lb)}</b></div>
+      ${r.block.length ? `<span class="lbl" style="color:var(--bad)">Não é possível salvar</span><ul class="iss">${li(r.block, 'b')}</ul>` : ''}
+      ${r.warn.length ? `<span class="lbl" style="color:var(--warn-fg)">Atenção</span><ul class="iss">${li(r.warn, 'w')}</ul>` : ''}
+      ${r.info.length ? `<ul class="iss">${li(r.info, 'i')}</ul>` : ''}${r.ok.length ? `<ul class="iss">${li(r.ok, 'o')}</ul>` : ''}
+      ${alts.length ? `<span class="lbl">Alternativas na mesma semana</span><div class="alts">${alts.map((a, i) => `<button class="btn" data-act="alt" data-i="${i}">${CODES[a.next].sh} em ${esc(fdw(a.date))}${a.clean ? '' : ' (com alerta)'}</button>`).join('')}</div><p class="note">A alternativa marca a folga no outro dia e mantém ${fd(mn.date)} como está.</p>` : ''}
+      ${!r.block.length && r.warn.length ? `<div class="field"><label for="fNote">Observação (opcional)</label><input class="ctl" id="fNote" maxlength="160" placeholder="Ex.: troca combinada com a equipe"></div>` : ''}
+      <div class="acts"><button class="btn" data-act="menuBack">Voltar</button>${r.block.length ? '' : `<button class="btn btn-pri" data-act="menuSave">${r.warn.length ? 'Salvar mesmo assim' : 'Salvar'}</button>`}</div>`;
+  }
+  return head + `<div class="opts" role="menu" aria-label="Tipo de dia">${menuOptions(mn.date).map(c => `<button class="opt" role="menuitemradio" aria-checked="${cur === c}" data-act="pick" data-c="${c}"><span class="sw ${CODES[c].cls}">${esc(CODES[c].sh || '·')}</span><span class="lb">${esc(CODES[c].lb)}</span><kbd>${CODES[c].key.toUpperCase()}</kbd></button>`).join('')}</div><div class="acts"><button class="btn" data-act="closeMenu">Fechar</button></div>`;
+}
+function showMenu() {
+  const root = document.getElementById('popRoot'); const mn = S.menu;
+  if (!mn) { root.innerHTML = ''; return; }
+  root.innerHTML = `${gNarrow() ? '<div class="scrim" style="z-index:59" data-act="closeMenu"></div>' : ''}<div class="pop" role="dialog" aria-label="Alterar dia" id="pop">${menuHtml()}</div>`;
+  const pop = document.getElementById('pop');
+  if (!gNarrow()) {
+    const a = mn.anchor && document.body.contains(mn.anchor) ? mn.anchor : document.querySelector(`td.c[data-e="${CSS.escape(mn.empId)}"][data-d="${mn.date}"]`);
+    const r = a ? a.getBoundingClientRect() : { left: 100, right: 100, top: 100, bottom: 100 };
+    const W = pop.offsetWidth, H = pop.offsetHeight;
+    let left = r.right + 8; if (left + W > innerWidth - 12) left = Math.max(12, r.left - W - 8);
+    let top = Math.min(Math.max(12, r.top - 10), innerHeight - H - 12);
+    pop.style.left = left + 'px'; pop.style.top = Math.max(12, top) + 'px';
+  }
+  const f = pop.querySelector('.opt[aria-checked="true"]') || pop.querySelector('.opt, .acts .btn'); if (f) f.focus();
+}
+function closeMenu(refocus = true) {
+  S.menu = null; showMenu();
+  if (refocus) { const c = document.querySelector('td.c[tabindex="0"]'); if (c) c.focus({ preventScroll: true }); }
+}
+async function pick(next) {
+  const mn = S.menu; if (!mn) return;
+  if (code(mn.empId, mn.date) === next) { closeMenu(); return toast('Este dia já está assim.'); }
+  mn.next = next; mn.res = null; return saveMenu('');
+}
+async function saveMenu(note) {
+  const mn = S.menu; if (!mn) return;
+  const n = note != null ? note : ((document.getElementById('fNote') || {}).value || '').trim();
+  const e = empById(mn.empId); const ch = { empId: mn.empId, date: mn.date, next: mn.next };
+  const label = `${e.name.split(' ')[0]}, ${fd(mn.date)} → ${CODES[mn.next].lb}`;
+  const info = mn.res && mn.res.info.length ? ' ' + mn.res.info[0] : '';
+  closeMenu();
+  const ok = await applyChanges([ch], label, { note: n });
+  if (ok) toast(`Salvo: ${label}.${n ? ' Observação registrada.' : ''}${info}`, false, true);
+  if (S.sheet && S.sheet.kind === 'emp') renderSheet();
+}
+async function useAlt(i) {
+  const mn = S.menu; const a = mn && mn.alts[i]; if (!a) return;
+  S.menu = { empId: mn.empId, date: a.date, step: 'opts' };
+  return pick(a.next);
+}
+// Atalhos de teclado também passam pela conferência das regras.
+function quickSet(empId, date, key) {
+  const k = String(key).toLowerCase(); const sun = wd(date) === 6;
+  let c = Object.keys(CODES).find(x => CODES[x].key === k); if (c == null) return false;
+  if (c === 'F' && sun) c = 'D'; if (c === 'D' && !sun) c = 'F';
+  if (!menuOptions(date).includes(c)) { toast(`${CODES[c].lb} só vale ${CODES[c].holOnly ? 'em feriado' : 'neste tipo de dia'}.`); return true; }
+  S.menu = { empId, date, step: 'opts' }; pick(c); return true;
+}
+
+// ======================= Painéis (gaveta) =======================
+function openSheet(kind, data) { S.sheet = { kind, ...(data || {}) }; renderSheet(); }
+function closeSheet() { S.sheet = null; document.getElementById('sheetRoot').innerHTML = ''; }
+function renderSheet() {
+  const root = document.getElementById('sheetRoot'); const sh = S.sheet; if (!sh) { root.innerHTML = ''; return; }
+  const v = { backup: sheetBackup, emp: sheetEmp, team: sheetTeam, empForm: sheetEmpForm, secForm: sheetSecForm, rules: sheetRules, alerts: sheetAlerts, bulk: sheetBulk, confirm: sheetConfirm, clear: sheetClear, imp: sheetImp }[sh.kind];
+  if (!v) return closeSheet();
+  const [title, html] = v(sh);
+  const scroll = (root.querySelector('.sh-b') || {}).scrollTop || 0;
+  root.innerHTML = `<div class="scrim" data-act="closeSheet"></div><aside class="sheet" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="sh-h"><h2>${esc(title)}</h2><button class="ibtn" data-act="closeSheet" aria-label="Fechar">${icon('x', 20, 2.4)}</button></div><div class="sh-b">${html}</div></aside>`;
+  const b = root.querySelector('.sh-b'); b.scrollTop = scroll;
+  if (sh.focus) { const f = root.querySelector(sh.focus); if (f) f.focus(); sh.focus = null; } else if (!scroll) { const f = root.querySelector('.sh-h .ibtn'); if (f) f.focus(); }
+}
+function sheetEmp(sh) {
+  const e = empById(sh.id); if (!e) return ['Colaborador', '<p class="note">Colaborador não encontrado.</p>'];
+  const sec = secById(e.sectorId); const first = iso(S.y, S.m, 1), last = iso(S.y, S.m, dim(S.y, S.m));
+  const days = range(first, last); const marks = monthAlerts().marks; const L = compLedger(e.id);
+  let tT = 0, tF = 0, tD = 0, tA = 0; for (const d of days) { const c = code(e.id, d); if (isWork(c)) tT++; if (isRest(c)) tF++; if (wd(d) === 6 && !isWork(c)) tD++; if (isAbs(c)) tA++; }
+  const N = sunEvery(e); const v = violations(e, first, last);
+  return [e.name, `<dl class="kv"><dt>Setor</dt><dd>${esc(sec ? sec.name : '—')}</dd><dt>Cargo</dt><dd>${esc(e.cargo || 'Não informado')}</dd><dt>Chapa</dt><dd>${esc(e.chapa || '—')}</dd></dl>
+    ${S.canAdmin ? `<div class="row"><button class="btn" data-act="editEmp" data-id="${esc(e.id)}">${icon('edit')} Editar cadastro</button></div>` : ''}
+    ${S.canWrite && S.db ? `<div class="row"><button class="btn" data-act="clear" data-id="${esc(e.id)}">${icon('erase')} Limpar ${MESES[S.m - 1]} desta pessoa</button></div>` : ''}
+    <div><span class="lbl">${cap(MESES[S.m - 1])} ${S.y}</span><div class="stats" style="margin-top:6px"><div class="stat"><b>${tT}</b><span>trabalho</span></div><div class="stat"><b>${tF}</b><span>folgas</span></div><div class="stat"><b>${tD}</b><span>domingos livres</span></div><div class="stat"><b>${L.pending.length}</b><span>FF pendentes</span></div></div></div>
+
+
+    <div class="days" role="list" aria-label="Dias do mês">${days.map(d => { const c = code(e.id, d); const h = holOn(d); const mk = marks[e.id + '|' + d];
+      return `<button class="dayr${mk ? ' bad' : ''}" role="listitem" data-act="empDay" data-e="${esc(e.id)}" data-d="${d}"><span class="dd${wd(d) === 6 ? ' sun' : ''}">${WD3[wd(d)]} ${fd(d)}</span><span class="sw ${CODES[c].cls}">${esc(CODES[c].sh || '·')}</span><span class="lb">${esc(CODES[c].lb)}${h ? ' · ' + esc(h.name) : ''}${mk ? ' · alerta' : ''}</span>${icon('right', 16)}</button>`; }).join('')}</div>`];
+}
+function sheetTeam() {
+  const secs = S.sectors.slice().sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+  const adm = S.canAdmin;
+  return ['Equipe', `${!adm ? '<p class="note">Somente administradores alteram o cadastro da equipe.</p>' : ''}
+    <section class="form"><div class="row" style="justify-content:space-between"><span class="lbl">Setores</span>${adm ? `<button class="btn" data-act="newSec">${icon('plus')} Novo setor</button>` : ''}</div>
+    <div class="list">${secs.length ? secs.map(s => { const n = activeEmps().filter(e => e.sectorId === s.id).length; return `<button class="li" data-act="editSec" data-id="${esc(s.id)}" ${adm ? '' : 'disabled'}><span class="grow"><span class="t1">${esc(s.name)}</span><br><span class="t2">${n} ativo${n === 1 ? '' : 's'} </span></span>${adm ? icon('edit', 16) : ''}</button>`; }).join('') : '<p class="note">Nenhum setor cadastrado.</p>'}</div></section>
+    <section class="form"><div class="row" style="justify-content:space-between"><span class="lbl">Colaboradores</span>${adm && secs.length ? `<span class="row"><button class="btn" data-act="bulk">Vários de uma vez</button><button class="btn" data-act="newEmp">${icon('plus')} Novo</button></span>` : ''}</div>
+    ${secs.length ? '' : '<p class="note">Cadastre um setor antes dos colaboradores.</p>'}
+    <div class="list">${S.emps.slice().sort((a, b) => (a.active === false) - (b.active === false) || a.name.localeCompare(b.name, 'pt-BR')).map(e => `<button class="li" data-act="editEmp" data-id="${esc(e.id)}" ${adm ? '' : 'disabled'}><span class="grow"><span class="t1">${esc(e.name)}</span><br><span class="t2">${esc([(secById(e.sectorId) || {}).name || 'Sem setor', e.cargo, e.chapa ? 'Chapa ' + e.chapa : ''].filter(Boolean).join(' · '))}</span></span>${e.active === false ? '<span class="pill">Inativo</span>' : ''}${adm ? icon('edit', 16) : ''}</button>`).join('')}</div></section>`];
+}
+function sheetSecForm(sh) {
+  const s = sh.id ? secById(sh.id) || {} : {}; const er = sh.err || {};
+  return [sh.id ? 'Editar setor' : 'Novo setor', `<form class="form" data-form="sec">
+    <div class="field"><label for="sName">Nome do setor</label><input class="ctl" id="sName" maxlength="40" value="${esc(sh.v ? sh.v.name : s.name || '')}" required>${er.name ? `<span class="err">${esc(er.name)}</span>` : ''}</div>
+
+
+
+    <div class="acts"><button type="button" class="btn" data-act="team">Voltar</button><button class="btn btn-pri" type="submit">Salvar setor</button></div></form>`];
+}
+function sheetEmpForm(sh) {
+  const e = sh.id ? empById(sh.id) || {} : { sectorId: S.sector !== 'all' ? S.sector : (S.sectors[0] || {}).id, active: true }; const v = sh.v || e; const er = sh.err || {};
+  return [sh.id ? 'Editar colaborador' : 'Novo colaborador', `<form class="form" data-form="emp">
+    <div class="field"><label for="eName">Nome</label><input class="ctl" id="eName" maxlength="60" value="${esc(v.name || '')}" required>${er.name ? `<span class="err">${esc(er.name)}</span>` : ''}</div>
+    <div class="grid2"><div class="field"><label for="eChapa">Chapa ou matrícula</label><input class="ctl" id="eChapa" maxlength="20" value="${esc(v.chapa || '')}">${er.chapa ? `<span class="err">${esc(er.chapa)}</span>` : ''}</div>
+    <div class="field"><label for="eCargo">Cargo ou função</label><input class="ctl" id="eCargo" maxlength="40" value="${esc(v.cargo || '')}"></div></div>
+    <div class="field"><label for="eSec">Setor</label><select class="ctl" id="eSec">${S.sectors.map(s => `<option value="${esc(s.id)}" ${v.sectorId === s.id ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}</select></div>
+
+    ${sh.id ? `<label class="check"><input type="checkbox" id="eActive" ${v.active !== false ? 'checked' : ''}> <span>Ativo na escala (inativos saem da grade, mas o histórico fica guardado)</span></label>` : ''}
+    <div class="acts"><button type="button" class="btn" data-act="team">Voltar</button><button class="btn btn-pri" type="submit">Salvar</button></div></form>`];
+}
+function sheetBulk(sh) {
+  return ['Cadastrar vários', `<form class="form" data-form="bulk"><div class="field"><label for="bSec">Setor</label><select class="ctl" id="bSec">${S.sectors.map(s => `<option value="${esc(s.id)}" ${(sh.sec || S.sector) === s.id ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}</select></div>
+    <div class="field"><label for="bList">Um colaborador por linha</label><textarea class="ctl" id="bList" rows="8" placeholder="Nome; chapa; cargo&#10;Nome; chapa&#10;Nome">${esc(sh.text || '')}</textarea><span class="note">Separe chapa e cargo com ponto e vírgula. Nomes ou chapas já cadastrados são ignorados.</span>${sh.err ? `<span class="err">${esc(sh.err)}</span>` : ''}</div>
+    <div class="acts"><button type="button" class="btn" data-act="team">Voltar</button><button class="btn btn-pri" type="submit">Cadastrar</button></div></form>`];
+}
+function sheetRules(sh) {
+  const c = S.cfg; const adm = S.canAdmin; const dis = adm ? '' : 'disabled';
+  const custom = S.hols.slice().sort((a, b) => a.date.localeCompare(b.date));
+  return ['Loja e feriados', `${!adm ? '<p class="note">Somente administradores alteram a loja e os feriados.</p>' : ''}
+    <form class="form" data-form="cfg">
+    <div class="field"><label for="cStore">Nome da loja</label><input class="ctl" id="cStore" maxlength="40" value="${esc(c.storeName || '')}" ${dis}></div>
+
+
+
+
+
+    ${adm ? '<div class="acts"><button class="btn btn-pri" type="submit">Salvar nome</button></div>' : ''}</form>
+    <section class="form"><span class="lbl">Backup dos dados</span><p class="note">Baixe um arquivo com setores, colaboradores, folgas, feriados e o nome da loja. Use para guardar uma cópia ou levar os dados para outro aparelho (celular ou PC).</p>
+    <div class="row"><button class="btn" data-act="backupOut">${icon('pdf')} Baixar backup</button></div>
+    ${adm ? `<div class="field"><label for="bkIn">Restaurar backup</label><input class="ctl" id="bkIn" type="file" accept=".json,application/json" data-ch="backupIn" style="padding-top:8px"><span class="note">Os dados do arquivo são gravados por cima dos que têm o mesmo cadastro. O resto continua como está.</span></div>` : ''}</section>
+    <section class="form"><span class="lbl">Feriados</span><p class="note">Os feriados nacionais entram sozinhos. Cadastre aqui os estaduais e municipais da loja, ou desconsidere um nacional.</p>
+    ${adm ? `<form class="form" data-form="hol"><div class="grid2"><div class="field"><label for="hDate">Data</label><input class="ctl" id="hDate" type="date" required></div><div class="field"><label for="hName">Nome</label><input class="ctl" id="hName" maxlength="60" placeholder="Ex.: Aniversário da cidade"></div></div><div class="acts"><button class="btn" type="submit">${icon('plus')} Adicionar feriado</button></div></form>` : ''}
+    <div class="list">${custom.length ? custom.map(h => `<div class="li"><span class="grow"><span class="t1">${fd(h.date)}/${h.date.slice(0, 4)} · ${esc(h.ignore ? 'Desconsiderado' : h.name)}</span><br><span class="t2">${h.ignore ? 'Feriado nacional desconsiderado nesta loja' : 'Cadastrado na loja'}</span></span>${adm ? `<button class="btn" data-act="delHol" data-id="${esc(h.id)}">Remover</button>` : ''}</div>`).join('') : '<p class="note">Nenhum feriado cadastrado na loja.</p>'}</div>
+    <div class="list">${holidaysOf(S.y).filter(h => h.auto).map(h => `<div class="li"><span class="grow"><span class="t1">${fd(h.date)} · ${esc(h.name)}</span><br><span class="t2">Nacional</span></span>${adm ? `<button class="btn" data-act="ignHol" data-d="${h.date}">Desconsiderar</button>` : ''}</div>`).join('')}</div></section>`];
+}
+function sheetAlerts(sh) {
+  const al = monthAlerts().list.filter(a => !sh.rule || a.rule === sh.rule);
+  const cls = { bad: 'bad', warn: 'warn', info: '' };
+  return [`Alertas de ${MESES[S.m - 1]}`, al.length ? `<div class="list">${al.map((a, i) => `<button class="li" data-act="goAlert" data-i="${i}"><span class="pill ${cls[a.sev]}">${a.sev === 'bad' ? 'Obrigatória' : a.sev === 'warn' ? 'Alerta' : 'Aviso'}</span><span class="grow">${esc(a.text)}</span>${icon('right', 16)}</button>`).join('')}</div>` : '<p class="note">Nenhum alerta neste mês com os filtros atuais.</p>'];
+}
+// ---------- Limpar escala ----------
+// Volta os dias do mês para "Trabalha" (em branco). Por padrão mantém férias, afastamentos e o registro de feriados.
+function clearPlan(sh) {
+  const first = iso(S.y, S.m, 1), last = iso(S.y, S.m, dim(S.y, S.m));
+  const emps = sh.emp === 'all' ? visibleEmps() : [empById(sh.emp)].filter(Boolean);
+  const changes = []; const kept = { abs: 0, hol: 0 }; const people = new Set();
+  for (const e of emps) for (const d of range(first, last)) {
+    const c = rawCode(e.id, d); if (!c) continue;
+    if (sh.keepAbs && isAbs(c)) { kept.abs++; continue; }
+    if (sh.keepHol && (c === 'FT' || c === 'X' || c === 'C')) { kept.hol++; continue; }
+    changes.push({ empId: e.id, date: d, next: '' }); people.add(e.id);
+  }
+  return { changes, kept, people: people.size, emps };
+}
+function sheetClear(sh) {
+  const scopeName = S.sector === 'all' ? 'todos os setores' : 'o setor ' + ((secById(S.sector) || {}).name || '');
+  const list = visibleEmps().slice().sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+  const pl = clearPlan(sh); const n = pl.changes.length; const who = sh.emp === 'all' ? `todos os colaboradores de ${scopeName}${S.q ? ' que aparecem na busca' : ''}` : (empById(sh.emp) || {}).name;
+  return [`Limpar escala de ${MESES[S.m - 1]}`, `<div class="form">
+    <div class="field"><label for="clEmp">De quem</label><select class="ctl" id="clEmp" data-ch="clEmp"><option value="all" ${sh.emp === 'all' ? 'selected' : ''}>Todos (${list.length}) · ${esc(scopeName)}</option>${list.map(e => `<option value="${esc(e.id)}" ${sh.emp === e.id ? 'selected' : ''}>${esc(e.name)}</option>`).join('')}</select><span class="note">Só o mês de ${MESES[S.m - 1]} de ${S.y} é limpo. Os outros meses não mudam.</span></div>
+    <label class="check"><input type="checkbox" id="clAbs" data-ch="clAbs" ${sh.keepAbs ? 'checked' : ''}> <span>Manter férias e afastamentos</span></label>
+    <label class="check"><input type="checkbox" id="clHol" data-ch="clHol" ${sh.keepHol ? 'checked' : ''}> <span>Manter feriados (FT e X) e folgas compensatórias (FF)</span></label>
+    <ul class="iss">${n ? `<li class="w">${n} dia${n === 1 ? '' : 's'} marcado${n === 1 ? '' : 's'} de ${pl.people} pessoa${pl.people === 1 ? '' : 's'} (${esc(who)}) volta${n === 1 ? '' : 'm'} a ficar em branco, como dia de trabalho.</li>` : `<li class="i">Não há marcações para limpar com essas opções.</li>`}
+    ${pl.kept.abs ? `<li class="i">${pl.kept.abs} dia(s) de férias ou afastamento ficam como estão.</li>` : ''}${pl.kept.hol ? `<li class="i">${pl.kept.hol} dia(s) de feriado ou folga compensatória ficam como estão.</li>` : ''}</ul>
+    <p class="note">Depois de limpar, dá para voltar tudo com Desfazer.</p>
+    <div class="acts"><button class="btn" data-act="closeSheet">Cancelar</button><button class="btn btn-danger" data-act="clearGo" ${n ? '' : 'disabled'}>${icon('erase')} Limpar ${n} dia${n === 1 ? '' : 's'}</button></div></div>`];
+}
+// ---------- Importar CSV ----------
+// Aceita o CSV que o próprio app exporta (Setor; Colaborador; Chapa; Cargo; um dia por coluna) ou só a lista da equipe.
+// Separador ; , ou tab. Células: em branco ou T = trabalha; F, FD, FT, X, FF (ou FC), FÉR, AF.
+function parseCsv(text) {
+  text = String(text).replace(/^﻿/, '');
+  const first = text.split(/\r?\n/)[0] || '';
+  const delim = [';', '\t', ','].map(d => [d, first.split(d).length]).sort((a, b) => b[1] - a[1])[0][0];
+  const rows = []; let row = [], f = '', q = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (q) { if (ch === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === delim) { row.push(f); f = ''; }
+    else if (ch === '\n' || ch === '\r') { if (ch === '\r' && text[i + 1] === '\n') i++; row.push(f); rows.push(row); row = []; f = ''; }
+    else f += ch;
+  }
+  if (f !== '' || row.length) { row.push(f); rows.push(row); }
+  return rows.filter(r => r.some(c => String(c).trim() !== ''));
+}
+const IMP_CODE = { '': '', T: '', TRAB: '', TRABALHA: '', F: 'F', FD: 'D', D: 'D', FT: 'FT', X: 'X', FF: 'C', FC: 'C', FER: 'FE', FE: 'FE', FERIAS: 'FE', AF: 'AF' };
+function impAnalyze(text) {
+  const rows = parseCsv(text);
+  if (rows.length < 2) return { error: 'O arquivo precisa ter o cabeçalho e pelo menos uma linha de colaborador.' };
+  const H = rows[0].map(h => norm(h));
+  const col = names => H.findIndex(h => names.includes(h));
+  const iName = col(['colaborador', 'nome', 'funcionario', 'colaboradores']), iCh = col(['chapa', 'matricula', 'chapa ou matricula']), iCg = col(['cargo', 'funcao', 'cargo ou funcao']), iSec = col(['setor']);
+  if (iName < 0) return { error: 'Não encontrei a coluna "Colaborador" (ou "Nome") na primeira linha do arquivo.' };
+  const fixed = new Set([iName, iCh, iCg, iSec]);
+  const dcols = [];
+  H.forEach((h, i) => {
+    if (fixed.has(i)) return;
+    let m = h.match(/(?:^|\s)(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?$/);
+    if (m) return dcols.push({ i, d: +m[1], m: +m[2], y: m[3] ? (+m[3] < 100 ? 2000 + +m[3] : +m[3]) : null });
+    m = h.match(/^(?:[a-z]{1,3}\s)?(\d{1,2})$/); if (m) dcols.push({ i, d: +m[1], m: null, y: null });
+  });
+  // Mês do arquivo: o que aparece nas datas do cabeçalho; sem mês no cabeçalho, o mês aberto na tela.
+  const cnt = {}; for (const c of dcols) if (c.m) cnt[c.m] = (cnt[c.m] || 0) + 1;
+  const mm = Object.keys(cnt).length ? +Object.entries(cnt).sort((a, b) => b[1] - a[1])[0][0] : S.m;
+  const yy = (dcols.find(c => c.y) || {}).y || S.y;
+  const days = dcols.filter(c => (!c.m || c.m === mm) && c.d >= 1 && c.d <= dim(yy, mm)).map(c => ({ i: c.i, date: iso(yy, mm, c.d) }));
+  const out = { y: yy, m: mm, ym: `${yy}-${pad(mm)}`, days: days.length, rows: [], newPeople: [], newSectors: [], bad: [], dup: 0, changes: 0 };
+  const seen = new Set(); const secNames = new Set(S.sectors.map(s => norm(s.name)));
+  for (const r of rows.slice(1)) {
+    const name = String(r[iName] || '').trim().replace(/\s+/g, ' '); if (!name || norm(name).length < 2) continue;
+    const chapa = iCh >= 0 ? String(r[iCh] || '').trim() : '', cargo = iCg >= 0 ? String(r[iCg] || '').trim() : '', secName = iSec >= 0 ? String(r[iSec] || '').trim() : '';
+    const key = chapa ? 'c:' + norm(chapa) : 'n:' + norm(name); if (seen.has(key)) { out.dup++; continue; } seen.add(key);
+    const emp = (chapa && S.emps.find(e => e.chapa && norm(e.chapa) === norm(chapa))) || S.emps.find(e => norm(e.name) === norm(name)) || null;
+    const codes = {};
+    for (const dc of days) {
+      const raw = String(r[dc.i] == null ? '' : r[dc.i]).trim(); const k = norm(raw).toUpperCase().replace(/[\s.]/g, '');
+      if (!(k in IMP_CODE)) { out.bad.push(`${name}, ${fd(dc.date)}: "${raw}" não é uma sigla conhecida`); continue; }
+      let c = IMP_CODE[k];
+      if (c === 'F' && wd(dc.date) === 6) c = 'D'; if (c === 'D' && wd(dc.date) !== 6) c = 'F';
+      if ((c === 'FT' || c === 'X') && !holOn(dc.date)) { out.bad.push(`${name}, ${fd(dc.date)}: ${raw} só vale em feriado`); continue; }
+      codes[dc.date] = c;
+    }
+    const row = { name, chapa, cargo, secName, emp, codes, changes: 0 };
+    if (emp) for (const [d, c] of Object.entries(codes)) if (rawCode(emp.id, d) !== c) row.changes++;
+    if (!emp) { row.changes = Object.values(codes).filter(Boolean).length; out.newPeople.push(row); if (secName && !secNames.has(norm(secName))) { secNames.add(norm(secName)); out.newSectors.push(secName); } }
+    out.changes += row.changes; out.rows.push(row);
+  }
+  if (!out.rows.length) return { error: 'Nenhuma linha com nome de colaborador foi encontrada.' };
+  return out;
+}
+function sheetImp(sh) {
+  const an = sh.an; const adm = S.canAdmin;
+  const pick = `<div class="field"><label for="impFile">Arquivo CSV</label><input class="ctl" id="impFile" type="file" accept=".csv,.txt,text/csv" data-ch="impFile" style="padding-top:8px">
+    <span class="note">Use o mesmo formato do botão CSV deste app: uma linha por colaborador com as colunas Setor, Colaborador, Chapa, Cargo e um dia por coluna. Nos dias, deixe em branco ou T para trabalho e use F, FD, FT, X, FF, FÉR ou AF. Um arquivo só com Colaborador, Chapa, Cargo e Setor cadastra a equipe.</span></div>`;
+  if (!an) return ['Importar CSV', pick + (sh.err ? `<ul class="iss"><li class="b">${esc(sh.err)}</li></ul>` : '')];
+  const matched = an.rows.filter(r => r.emp); const nn = an.newPeople.length; const create = adm && sh.create !== false;
+  const total = matched.reduce((t, r) => t + r.changes, 0) + (create ? an.newPeople.reduce((t, r) => t + r.changes, 0) : 0);
+  const can = total > 0 || (create && nn > 0);
+  return ['Importar CSV', `${pick}
+    <ul class="iss"><li class="i">Arquivo <b>${esc(sh.fileName || '')}</b>${an.days ? ` · escala de <b>${MESES[an.m - 1]} de ${an.y}</b> (${an.days} dias)` : ' · só equipe, sem dias'}.</li>
+    <li class="${matched.length ? 'o' : 'i'}">${matched.length} colaborador${matched.length === 1 ? '' : 'es'} já cadastrado${matched.length === 1 ? '' : 's'}${an.days ? ` · ${matched.reduce((t, r) => t + r.changes, 0)} dia(s) mudam` : ''}.</li>
+    ${nn ? `<li class="w">${nn} pessoa${nn === 1 ? '' : 's'} não cadastrada${nn === 1 ? '' : 's'}: ${esc(an.newPeople.slice(0, 8).map(r => r.name).join(', '))}${nn > 8 ? '…' : ''}.</li>` : ''}
+    ${an.newSectors.length ? `<li class="w">Setor${an.newSectors.length === 1 ? '' : 'es'} novo${an.newSectors.length === 1 ? '' : 's'}: ${esc(an.newSectors.join(', '))}.</li>` : ''}
+    ${an.dup ? `<li class="i">${an.dup} linha(s) repetida(s) no arquivo foram ignoradas.</li>` : ''}
+    ${an.bad.length ? `<li class="b">${an.bad.length} célula(s) não serão importadas: ${esc(an.bad.slice(0, 4).join('; '))}${an.bad.length > 4 ? '…' : ''}</li>` : ''}</ul>
+    ${nn ? (adm ? `<label class="check"><input type="checkbox" id="impNew" data-ch="impNew" ${create ? 'checked' : ''}> <span>Cadastrar as pessoas novas${an.newSectors.length ? ' e os setores novos' : ''}${S.sectors.length || an.newSectors.length ? '' : ''}</span></label>${!an.newPeople.every(r => r.secName) && !S.sectors.length ? '<p class="note">Sem coluna Setor e sem setor cadastrado: cadastre um setor em Equipe antes.</p>' : !an.newPeople.every(r => r.secName) ? `<p class="note">Quem não tem setor no arquivo entra em ${esc((secById(S.sector) || S.sectors[0] || {}).name || '')}.</p>` : ''}` : '<p class="note">Só administradores cadastram pessoas novas. Elas serão ignoradas.</p>') : ''}
+    ${an.days ? `<p class="note">Os dias do arquivo substituem os da escala de ${MESES[an.m - 1]}. Célula em branco conta como trabalho. Depois dá para voltar tudo com Desfazer.</p>` : ''}
+    <div class="acts"><button class="btn" data-act="closeSheet">Cancelar</button><button class="btn btn-pri" data-act="impGo" ${can ? '' : 'disabled'}>${icon('upload')} ${an.days ? `Importar ${total} dia${total === 1 ? '' : 's'}` : `Cadastrar ${create ? nn : 0}`}</button></div>`];
+}
+async function impRun(sh) {
+  const an = sh.an; const create = S.canAdmin && sh.create !== false;
+  const changes = []; const start = [];
+  try {
+    const secIds = {}; for (const s of S.sectors) secIds[norm(s.name)] = s.id;
+    const fallback = (secById(S.sector) || S.sectors[0] || {}).id;
+    if (create) for (const r of an.newPeople) {
+      let sid = r.secName ? secIds[norm(r.secName)] : fallback;
+      if (r.secName && !sid) { sid = await dbSet('setores', null, { name: r.secName, min: 0, minDom: '', sunEvery: 0 }); secIds[norm(r.secName)] = sid; S.sectors.push({ id: sid, name: r.secName, min: 0, minDom: '', sunEvery: 0 }); }
+      if (!sid) continue;
+      const d = { name: r.name, chapa: r.chapa, cargo: r.cargo, sectorId: sid, sunEvery: '', active: true };
+      const id = await dbSet('colaboradores', null, d); S.emps.push({ id, ...d }); r.emp = { id, ...d };
+    }
+  } catch (e) { return toast('A importação parou ao cadastrar: ' + errMsg(e), true); }
+  if (an.days) for (const r of an.rows) {
+    if (!r.emp) continue; let any = false;
+    for (const [d, c] of Object.entries(r.codes)) { if (rawCode(r.emp.id, d) !== c) { changes.push({ empId: r.emp.id, date: d, next: c }); any = true; } }
+    if (!any) start.push(r.emp.id);
+  }
+  if (an.days) goMonth(an.y, an.m);
+  if (changes.length || start.length) {
+    const ok = await applyChanges(changes, `Importar CSV (${sh.fileName || MESES[an.m - 1]})`, { start, ym: an.ym });
+    if (ok) toast(`Importado: ${changes.length} dia(s)${create && an.newPeople.length ? ` e ${an.newPeople.filter(r => r.emp).length} pessoa(s) nova(s)` : ''}.`, false, !!changes.length);
+  } else toast(create && an.newPeople.length ? `${an.newPeople.filter(r => r.emp).length} colaborador(es) cadastrado(s).` : 'Nada mudou: a escala já estava igual ao arquivo.');
+  render();
+}
+// ---------- Backup ----------
+function backupData() {
+  const clean = o => { const { id, ...r } = o; return { id, ...JSON.parse(JSON.stringify(r)) }; };
+  return { app: 'oba-escala', versao: 1, exportadoEm: new Date().toISOString(), loja: S.cfg.storeName || '',
+    config: { storeName: S.cfg.storeName || '', maxConsec: +S.cfg.maxConsec || 6, compPrazo: +S.cfg.compPrazo || 0, rules: S.cfg.rules || {} },
+    setores: S.sectors.map(clean), colaboradores: S.emps.map(clean), feriados: S.hols.map(clean),
+    escala: Object.entries(S.esc).filter(([, v]) => !v.local || Object.keys(v.days || {}).length).map(([id, v]) => ({ id, empId: v.empId, ym: v.ym, days: { ...(v.days || {}) } })) };
+}
+function sheetBackup(sh) {
+  const b = sh.data; const n = k => (b[k] || []).length;
+  const days = (b.escala || []).reduce((t, d) => t + Object.keys(d.days || {}).length, 0);
+  return ['Restaurar backup', `<ul class="iss"><li class="i">Arquivo <b>${esc(sh.fileName)}</b>${b.loja ? ` · loja ${esc(b.loja)}` : ''}${b.exportadoEm ? ` · feito em ${esc(fd(b.exportadoEm.slice(0, 10)))}/${b.exportadoEm.slice(0, 4)}` : ''}.</li>
+    <li class="o">${n('setores')} setor(es), ${n('colaboradores')} colaborador(es), ${n('escala')} mês(es) de escala com ${days} dia(s) marcados, ${n('feriados')} feriado(s) da loja.</li>
+    <li class="w">Cadastros e meses com o mesmo código dos atuais são substituídos pelos do arquivo.</li></ul>
+    <div class="acts"><button class="btn" data-act="rules">Cancelar</button><button class="btn btn-pri" data-act="backupGo">Restaurar</button></div>`];
+}
+async function backupRestore(b) {
+  if (!S.db) return toast('Sem armazenamento: nada foi restaurado.', true);
+  const ok = id => typeof id === 'string' && /^[A-Za-z0-9_\-.~:@+]{1,200}$/.test(id);
+  let n = 0;
+  try {
+    for (const col of ['setores', 'colaboradores', 'feriados']) for (const d of b[col] || []) { if (!ok(d.id)) continue; const { id, ...r } = d; await S.db.collection(col).doc(id).set(r); n++; }
+    if (b.config && typeof b.config === 'object') { await S.db.doc('config/app').set(b.config); n++; }
+    for (const d of b.escala || []) { if (!ok(d.id) || !d.empId || !/^\d{4}-\d{2}$/.test(d.ym || '')) continue; await S.db.collection('escala').doc(d.id).set({ empId: d.empId, ym: d.ym, days: d.days || {}, updatedAt: new Date().toISOString() }); n++; }
+  } catch (e) { return toast(`A restauração parou depois de ${n} registro(s): ${errMsg(e)}`, true); }
+  log({ acao: 'backup_restaurado', qtd: n }); toast(`Backup restaurado: ${n} registro(s).`);
+}
+function sheetConfirm(sh) { return [sh.title, `<p style="margin:0">${sh.text}</p><div class="acts"><button class="btn" data-act="closeSheet">Cancelar</button><button class="btn ${sh.danger ? 'btn-danger' : 'btn-pri'}" data-act="confirmYes">${esc(sh.yes)}</button></div>`]; }
+
+// ======================= Cadastros =======================
+async function dbSet(col, id, data) {
+  if (!S.db) throw { code: 'unavailable', message: 'Sem armazenamento.' };
+  const ref = id ? S.db.collection(col).doc(id) : S.db.collection(col).doc(); await ref.set(data); return ref.id;
+}
+async function submitForm(form) {
+  const v = id => (document.getElementById(id) || {}).value;
+  const kind = form.dataset.form; const sh = S.sheet;
+  try {
+    if (kind === 'sec') {
+      const old = (sh.id && secById(sh.id)) || {}; const d = { name: v('sName').trim(), min: old.min || 0, minDom: old.minDom != null ? old.minDom : '', sunEvery: old.sunEvery || 0 };
+      const er = {}; if (d.name.length < 2) er.name = 'Informe o nome do setor.'; else if (S.sectors.some(s => s.id !== sh.id && norm(s.name) === norm(d.name))) er.name = 'Já existe um setor com esse nome.';
+      if (Object.keys(er).length) { S.sheet = { ...sh, err: er, v: d }; return renderSheet(); }
+      await dbSet('setores', sh.id, d); toast('Setor salvo.'); openSheet('team');
+    } else if (kind === 'emp') {
+      const d = { name: v('eName').trim().replace(/\s+/g, ' '), chapa: v('eChapa').trim(), cargo: v('eCargo').trim(), sectorId: v('eSec'), sunEvery: ((sh.id && empById(sh.id)) || {}).sunEvery ?? '', active: sh.id ? !!(document.getElementById('eActive') || {}).checked : true };
+      const er = {}; if (d.name.length < 3) er.name = 'Informe o nome do colaborador.'; else if (S.emps.some(e => e.id !== sh.id && norm(e.name) === norm(d.name))) er.name = 'Já existe um colaborador com esse nome.';
+      if (d.chapa && S.emps.some(e => e.id !== sh.id && e.chapa && norm(e.chapa) === norm(d.chapa))) er.chapa = 'Essa chapa já está cadastrada.';
+      if (Object.keys(er).length) { S.sheet = { ...sh, err: er, v: d }; return renderSheet(); }
+      await dbSet('colaboradores', sh.id, d); toast(sh.id ? 'Cadastro atualizado.' : 'Colaborador cadastrado.'); openSheet('team');
+    } else if (kind === 'bulk') {
+      const sec = v('bSec'); const lines = v('bList').split('\n').map(l => l.trim()).filter(Boolean);
+      const names = new Set(S.emps.map(e => norm(e.name))), chapas = new Set(S.emps.map(e => norm(e.chapa)).filter(Boolean)); let n = 0, skip = 0;
+      if (!lines.length) { S.sheet = { ...sh, err: 'Escreva ao menos um nome.', text: v('bList') }; return renderSheet(); }
+      for (const l of lines) {
+        const [name, chapa = '', cargo = ''] = l.split(/[;\t]/).map(x => x.trim());
+        if (!name || name.length < 3 || names.has(norm(name)) || (chapa && chapas.has(norm(chapa)))) { skip++; continue; }
+        await dbSet('colaboradores', null, { name: name.replace(/\s+/g, ' '), chapa, cargo, sectorId: sec, sunEvery: '', active: true }); names.add(norm(name)); if (chapa) chapas.add(norm(chapa)); n++;
+      }
+      toast(`${n} colaborador(es) cadastrado(s)${skip ? `, ${skip} linha(s) ignorada(s) por repetição ou nome curto` : ''}.`); openSheet('team');
+    } else if (kind === 'cfg') {
+      const d = { storeName: v('cStore').trim(), maxConsec: +S.cfg.maxConsec || 6, compPrazo: +S.cfg.compPrazo || 0, rules: S.cfg.rules || {} };
+      await S.db.doc('config/app').set(d); toast('Nome da loja salvo.');
+    } else if (kind === 'hol') {
+      const date = v('hDate'), name = v('hName').trim(); if (!date || !name) return toast('Informe a data e o nome do feriado.', true);
+      await dbSet('feriados', null, { date, name }); toast('Feriado adicionado.');
+    }
+  } catch (e) { toast('Não foi salvo: ' + errMsg(e), true); }
+}
+
+// ======================= PDF e CSV =======================
+async function offerFile(filename, data) {
+  const dl = S.downloads; if (!dl) return toast('Este visualizador não permite baixar arquivos.', true);
+  try { await dl.save({ filename, data }); } catch (e) { if (e && e.code !== 'declined') toast('Não foi possível baixar: ' + (e.message || e.code), true); }
+}
+function exportCsv() {
+  const first = iso(S.y, S.m, 1), last = iso(S.y, S.m, dim(S.y, S.m)); const days = range(first, last);
+  const q = s => '"' + String(s).replace(/"/g, '""') + '"';
+  const lines = [['Setor', 'Colaborador', 'Chapa', 'Cargo', ...days.map(d => WD3[wd(d)] + ' ' + fd(d)), 'Trabalho', 'Folgas', 'Domingos livres'].map(q).join(';')];
+  for (const sec of visibleSectors()) for (const e of visibleEmps().filter(x => x.sectorId === sec.id).sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'))) {
+    const cs = days.map(d => code(e.id, d));
+    lines.push([sec.name, e.name, e.chapa || '', e.cargo || '', ...cs.map(c => c === '' ? 'T' : CODES[c].sh), cs.filter(isWork).length, cs.filter(isRest).length, days.filter((d, i) => wd(d) === 6 && !isWork(cs[i])).length].map(q).join(';'));
+  }
+  offerFile(`escala-${S.y}-${pad(S.m)}.csv`, '﻿' + lines.join('\r\n'));
+}
+function exportPdf() {
+  if (!window.jspdf) return toast('O gerador de PDF não carregou. Verifique a conexão e tente de novo.', true);
+  const { jsPDF } = window.jspdf; const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+  const first = iso(S.y, S.m, 1), last = iso(S.y, S.m, dim(S.y, S.m)); const days = range(first, last);
+  const M = 10, W = 297 - 2 * M; const nameW = 44, chW = 15, totW = 7; const dayW = (W - nameW - chW - 3 * totW) / days.length; const rowH = 6.2;
+  const FILL = { '': [234, 245, 238], F: [228, 227, 225], D: [222, 234, 250], FT: [255, 236, 210], X: [255, 236, 210], C: [255, 236, 210], FE: [236, 228, 250], AF: [236, 228, 250] };
+  const secs = visibleSectors().filter(s => visibleEmps().some(e => e.sectorId === s.id)); if (!secs.length) return toast('Não há colaboradores para exportar.', true);
+  const title = s => `Escala · ${S.cfg.storeName ? S.cfg.storeName + ' · ' : ''}${s.name} · ${cap(MESES[S.m - 1])} de ${S.y}`;
+  let firstPage = true;
+  for (const sec of secs) {
+    const emps = visibleEmps().filter(e => e.sectorId === sec.id).sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+    const perPage = Math.floor((210 - 2 * M - 34) / rowH) - 2;
+    for (let p = 0; p < emps.length; p += perPage) {
+      if (!firstPage) doc.addPage(); firstPage = false;
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(30); doc.text(title(sec), M, M + 4);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(90); doc.text(`Gerado em ${fd(TODAY)}/${TODAY.slice(0, 4)}${emps.length > perPage ? ` · parte ${p / perPage + 1} de ${Math.ceil(emps.length / perPage)}` : ''}`, M + W, M + 4, { align: 'right' });
+      let y = M + 9; doc.setDrawColor(190); doc.setLineWidth(0.15);
+      // cabeçalho
+      doc.setFillColor(245, 243, 241); doc.rect(M, y, W, 8, 'F'); doc.setTextColor(40); doc.setFont('helvetica', 'bold'); doc.setFontSize(7);
+      doc.text('Colaborador', M + 1.5, y + 5); doc.text('Chapa', M + nameW + 1, y + 5);
+      days.forEach((d, i) => { const x = M + nameW + chW + i * dayW; const h = holOn(d); if (h) { doc.setFillColor(255, 236, 210); doc.rect(x, y, dayW, 8, 'F'); } doc.setTextColor(wd(d) === 6 ? 200 : 40, wd(d) === 6 ? 50 : 40, wd(d) === 6 ? 40 : 40); doc.text(WL[wd(d)], x + dayW / 2, y + 3.2, { align: 'center' }); doc.text(String(+d.slice(8)), x + dayW / 2, y + 6.8, { align: 'center' }); });
+      doc.setTextColor(40); ['T', 'F', 'D'].forEach((t, i) => doc.text(t, M + nameW + chW + days.length * dayW + i * totW + totW / 2, y + 5, { align: 'center' }));
+      doc.rect(M, y, W, 8); y += 8;
+      for (const e of emps.slice(p, p + perPage)) {
+        const cs = days.map(d => code(e.id, d));
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(6.8); doc.setTextColor(30);
+        doc.text(doc.splitTextToSize(e.name.toUpperCase(), nameW - 2)[0], M + 1.5, y + 4.1); doc.setFont('helvetica', 'normal'); doc.text(String(e.chapa || ''), M + nameW + 1, y + 4.1);
+        cs.forEach((c, i) => { const x = M + nameW + chW + i * dayW; const f = FILL[c] || FILL['']; doc.setFillColor(...f); doc.rect(x, y, dayW, rowH, 'F'); doc.rect(x, y, dayW, rowH); if (CODES[c].sh) { doc.setFont('helvetica', 'bold'); doc.setFontSize(CODES[c].sh.length > 2 ? 5 : 6.5); doc.text(CODES[c].sh, x + dayW / 2, y + 4.1, { align: 'center' }); } });
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(6.8);
+        [cs.filter(isWork).length, cs.filter(isRest).length, days.filter((d, i) => wd(d) === 6 && !isWork(cs[i])).length].forEach((n, i) => doc.text(String(n), M + nameW + chW + days.length * dayW + i * totW + totW / 2, y + 4.1, { align: 'center' }));
+        doc.rect(M, y, W, rowH); doc.line(M + nameW, y, M + nameW, y + rowH); doc.line(M + nameW + chW, y, M + nameW + chW, y + rowH); y += rowH;
+      }
+      // linha de cobertura
+      doc.setFillColor(245, 243, 241); doc.rect(M, y, W, rowH, 'F'); doc.setFont('helvetica', 'bold'); doc.setFontSize(6.5); doc.setTextColor(70); doc.text(`Trabalhando${+sec.min ? ' (mín. ' + sec.min + ')' : ''}`, M + 1.5, y + 4.1);
+      days.forEach((d, i) => { const cv = coverage(sec, d); const x = M + nameW + chW + i * dayW; if (cv.low) { doc.setFillColor(252, 225, 223); doc.rect(x, y, dayW, rowH, 'F'); doc.setTextColor(200, 40, 30); } else doc.setTextColor(70); doc.text(String(cv.work), x + dayW / 2, y + 4.1, { align: 'center' }); });
+      doc.setDrawColor(190); doc.rect(M, y, W, rowH); y += rowH + 5;
+      // legenda e feriados
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(60);
+      doc.text('Legenda: em branco = trabalha · F folga semanal · FD folga dominical · FT feriado trabalhado · X não trabalha no feriado · FF folga compensatória · FÉR férias · AF afastamento · T/F/D = totais de trabalho, folgas e domingos livres', M, y, { maxWidth: W }); y += 4.5;
+      const hl = holidaysOf(S.y).filter(h => h.date >= first && h.date <= last);
+      if (hl.length) doc.text('Feriados: ' + hl.map(h => fd(h.date) + ' ' + h.name).join(' · '), M, y, { maxWidth: W });
+    }
+  }
+  offerFile(`escala-${S.y}-${pad(S.m)}${S.sector === 'all' ? '' : '-' + norm((secById(S.sector) || {}).name).replace(/[^a-z0-9]+/g, '-')}.pdf`, doc.output('blob'));
+}
+
+// ======================= Avisos =======================
+let toastT;
+function toast(msg, bad, undo) {
+  const r = document.getElementById('toastRoot'); clearTimeout(toastT);
+  r.innerHTML = `<div class="toast${bad ? ' bad' : ''}" role="${bad ? 'alert' : 'status'}"><span>${esc(msg)}</span>${undo && S.undo.length ? '<button data-act="undo">Desfazer</button>' : ''}</div>`;
+  toastT = setTimeout(() => { r.innerHTML = ''; }, bad ? 7000 : 4500);
+}
+
+// ======================= Eventos =======================
+function goMonth(y, m) { S.y = y; S.m = m; S.preview = null; S.simStart = null; S.autoOpts.redoOk = false; closeMenu(false); render(); }
+document.addEventListener('click', async ev => {
+  const cell = ev.target.closest('td.c');
+  if (cell) {
+    const k = cell.dataset.e + '|' + cell.dataset.d;
+    if (S.menu && S.menu.empId + '|' + S.menu.date === k) return closeMenu();
+    document.querySelectorAll('td.c[tabindex="0"]').forEach(c => c.tabIndex = -1); cell.tabIndex = 0;
+    return openMenu(cell.dataset.e, cell.dataset.d, cell);
+  }
+  const el = ev.target.closest('[data-act]');
+  if (!el) { if (S.menu && !ev.target.closest('#pop')) closeMenu(false); return; }
+  const a = el.dataset.act;
+  if (S.menu && !el.closest('#pop') && a !== 'closeMenu') closeMenu(false);
+  if (a === 'month') { const t = addMonth(S.y, S.m, +el.dataset.n); return goMonth(t.y, t.m); }
+  if (a === 'today') return goMonth(+TODAY.slice(0, 4), +TODAY.slice(5, 7));
+  if (a === 'undo') return undoLast();
+  if (a === 'view') { S.view = el.dataset.v; closeMenu(false); return render(); }
+  if (a === 'heatMode') { S.heatMode = el.dataset.v; return render(); }
+  if (a === 'imp') return openSheet('imp', { focus: '#impFile' });
+  if (a === 'impGo') { const sh = S.sheet; if (!sh || sh.kind !== 'imp' || !sh.an || el.disabled) return; el.disabled = true; closeSheet(); return impRun(sh); }
+  if (a === 'clear') return openSheet('clear', { emp: el.dataset.id || 'all', keepAbs: true, keepHol: true });
+  if (a === 'clearGo') {
+    const sh = S.sheet; if (!sh || sh.kind !== 'clear' || el.disabled) return; el.disabled = true;
+    const pl = clearPlan(sh); if (!pl.changes.length) return closeSheet();
+    const who = sh.emp === 'all' ? 'todos' : (empById(sh.emp) || {}).name.split(' ')[0];
+    closeSheet();
+    const ok = await applyChanges(pl.changes, `Limpar ${MESES[S.m - 1]} (${who})`);
+    if (ok) toast(`Escala de ${MESES[S.m - 1]} limpa: ${pl.changes.length} dia(s) de ${who === 'todos' ? pl.people + ' pessoa(s)' : who}.`, false, true);
+    return;
+  }
+  if (a === 'full') return enterFull();
+  if (a === 'fullExit') return exitFull();
+  if (a === 'rotate') { S.rotPref = !isRot(); return render(); }
+  if (a === 'pdf') return exportPdf();
+  if (a === 'csv') return exportCsv();
+  if (a === 'clearQ') { S.q = ''; return render(); }
+  if (a === 'syncInfo') return toast(S.local ? (S.saveErr ? 'A última alteração não foi salva: ' + S.saveErr : 'Os dados ficam guardados neste aparelho, neste navegador. Para levar a outro aparelho, use Loja e feriados > Baixar backup.') : !S.db ? 'O armazenamento compartilhado não está disponível nesta visualização. Abra o app em claude.ai com sua conta.' : S.saveErr ? 'A última alteração não foi salva: ' + S.saveErr + ' Refaça a alteração.' : 'Cada alteração é salva na hora e fica disponível ao reabrir o app.');
+  if (a === 'closeMenu') return closeMenu();
+  if (a === 'pick') return pick(el.dataset.c);
+  if (a === 'menuBack') { S.menu.step = 'opts'; return showMenu(); }
+  if (a === 'menuSave') return saveMenu();
+  if (a === 'alt') return useAlt(+el.dataset.i);
+  if (a === 'emp') return openSheet('emp', { id: el.dataset.id });
+  if (a === 'empDay') { const r = el.getBoundingClientRect(); return openMenu(el.dataset.e, el.dataset.d, el); }
+  if (a === 'team') return openSheet('team');
+  if (a === 'rules') return openSheet('rules');
+  if (a === 'alerts') return openSheet('alerts', { rule: el.dataset.rule || null });
+  if (a === 'closeSheet') return closeSheet();
+  if (a === 'newSec') return openSheet('secForm', { focus: '#sName' });
+  if (a === 'editSec') return openSheet('secForm', { id: el.dataset.id, focus: '#sName' });
+  if (a === 'newEmp') return openSheet('empForm', { focus: '#eName' });
+  if (a === 'editEmp') return openSheet('empForm', { id: el.dataset.id, focus: '#eName' });
+  if (a === 'bulk') return openSheet('bulk', { focus: '#bList' });
+  if (a === 'backupOut') { const b = backupData(); return offerFile(`oba-escala-backup-${TODAY}.json`, JSON.stringify(b, null, 1)); }
+  if (a === 'backupGo') { const sh = S.sheet; if (!sh || sh.kind !== 'backup' || el.disabled) return; el.disabled = true; closeSheet(); return backupRestore(sh.data); }
+  if (a === 'delHol') { try { await S.db.collection('feriados').doc(el.dataset.id).delete(); toast('Feriado removido.'); } catch (e) { toast('Não foi removido: ' + errMsg(e), true); } return; }
+  if (a === 'ignHol') { try { await dbSet('feriados', null, { date: el.dataset.d, name: '', ignore: true }); toast('Feriado desconsiderado nesta loja.'); } catch (e) { toast('Não foi salvo: ' + errMsg(e), true); } return; }
+  if (a === 'goAlert') {
+    const al = monthAlerts().list.filter(x => !S.sheet.rule || x.rule === S.sheet.rule)[+el.dataset.i]; closeSheet(); if (!al) return;
+    if (al.empId) { S.cursor = al.empId + '|' + al.date; S.focusGrid = true; render(); const c = document.querySelector(`td.c[data-e="${CSS.escape(al.empId)}"][data-d="${al.date}"]`); if (c) { c.scrollIntoView({ block: 'nearest', inline: 'center' }); c.focus({ preventScroll: true }); } }
+    else { const th = document.querySelector(`th[data-date="${al.date}"]`); if (th) th.scrollIntoView({ block: 'nearest', inline: 'center' }); }
+    return;
+  }
+  if (a === 'confirmYes') { const fn = S.sheet && S.sheet.onYes; closeSheet(); if (fn) fn(); }
+});
+document.addEventListener('submit', ev => { const f = ev.target.closest('form[data-form]'); if (!f) return; ev.preventDefault(); submitForm(f); });
+document.addEventListener('change', ev => {
+  const t = ev.target; const k = t.dataset && t.dataset.ch; if (!k) return;
+  if (k === 'month' && /^\d{4}-\d{2}$/.test(t.value)) return goMonth(+t.value.slice(0, 4), +t.value.slice(5, 7));
+  if (k === 'impFile') {
+    const sh = S.sheet; const f = t.files && t.files[0]; if (!sh || !f) return;
+    if (f.size > 2 * 1024 * 1024) { sh.an = null; sh.err = 'Arquivo grande demais (máximo 2 MB).'; return renderSheet(); }
+    const rd = new FileReader();
+    rd.onload = () => { let txt = String(rd.result || ''); if (txt.includes('\ufffd')) { const r2 = new FileReader(); r2.onload = () => { done(String(r2.result || '')); }; r2.readAsText(f, 'windows-1252'); return; } done(txt); };
+    const done = txt => { const an = impAnalyze(txt); if (an.error) { sh.an = null; sh.err = an.error; } else { sh.an = an; sh.err = null; } sh.fileName = f.name; renderSheet(); };
+    rd.onerror = () => { sh.an = null; sh.err = 'Não foi possível ler o arquivo.'; renderSheet(); };
+    rd.readAsText(f, 'utf-8'); return;
+  }
+  if (k === 'backupIn') {
+    const f = t.files && t.files[0]; if (!f) return;
+    f.text().then(txt => { let b; try { b = JSON.parse(txt); } catch (e) { b = null; }
+      if (!b || b.app !== 'oba-escala') return toast('Este arquivo não é um backup do Oba Escala.', true);
+      openSheet('backup', { data: b, fileName: f.name }); }).catch(() => toast('Não foi possível ler o arquivo.', true));
+    return;
+  }
+  if (k === 'impNew') { const sh = S.sheet; if (sh && sh.kind === 'imp') { sh.create = t.checked; sh.focus = '#impNew'; renderSheet(); } return; }
+  if (k === 'clEmp' || k === 'clAbs' || k === 'clHol') { const sh = S.sheet; if (!sh || sh.kind !== 'clear') return; if (k === 'clEmp') sh.emp = t.value; if (k === 'clAbs') sh.keepAbs = t.checked; if (k === 'clHol') sh.keepHol = t.checked; sh.focus = '#' + t.id; return renderSheet(); }
+  if (k === 'sector') { S.sector = t.value; S.preview = null; S.simStart = null; saveView(); return render(); }
+});
+let qT;
+document.addEventListener('input', ev => {
+  if (ev.target.dataset && ev.target.dataset.in === 'q') { clearTimeout(qT); const v = ev.target.value; qT = setTimeout(() => { S.q = v; render(); const i = document.getElementById('fQ'); if (i) { i.focus(); i.setSelectionRange(v.length, v.length); } }, 200); }
+});
+document.addEventListener('keydown', ev => {
+  if (ev.key === 'Escape') { if (S.menu) { ev.preventDefault(); return closeMenu(); } if (S.sheet) { ev.preventDefault(); return closeSheet(); } if (S.full) { ev.preventDefault(); return exitFull(); } }
+  const tag = (ev.target.tagName || '');
+  if ((ev.ctrlKey || ev.metaKey) && !ev.shiftKey && ev.key.toLowerCase() === 'z' && !/INPUT|TEXTAREA|SELECT/.test(tag) && !S.sheet && !S.menu) { ev.preventDefault(); return undoLast(); }
+  const pop = document.getElementById('pop');
+  if (pop && pop.contains(ev.target)) {
+    if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') { const b = [...pop.querySelectorAll('.opt, .acts .btn, .alts .btn')]; const i = b.indexOf(document.activeElement); if (b.length) { ev.preventDefault(); b[(i + (ev.key === 'ArrowDown' ? 1 : -1) + b.length) % b.length].focus(); } }
+    else if (S.menu && S.menu.step === 'opts' && ev.key.length === 1 && !ev.ctrlKey && !ev.metaKey) { const c = Object.keys(CODES).find(x => CODES[x].key === ev.key.toLowerCase()); if (c != null && menuOptions(S.menu.date).includes(c)) { ev.preventDefault(); pick(c); } }
+    return;
+  }
+  const cell = ev.target.closest && ev.target.closest('td.c'); if (!cell) return;
+  const row = cell.parentElement; const cells = [...row.querySelectorAll('td.c')]; const i = cells.indexOf(cell); let next = null;
+  if (ev.key === 'ArrowRight') next = cells[i + 1]; else if (ev.key === 'ArrowLeft') next = cells[i - 1];
+  else if (ev.key === 'Home') next = cells[0]; else if (ev.key === 'End') next = cells[cells.length - 1];
+  else if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') { let r = row; do { r = ev.key === 'ArrowDown' ? r.nextElementSibling : r.previousElementSibling; } while (r && !r.querySelector('td.c')); if (r) next = r.querySelectorAll('td.c')[i]; }
+  if (next) { ev.preventDefault(); cell.tabIndex = -1; next.tabIndex = 0; next.focus(); S.cursor = next.dataset.e + '|' + next.dataset.d; return; }
+  if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); return openMenu(cell.dataset.e, cell.dataset.d, cell); }
+  if (ev.ctrlKey || ev.metaKey || ev.altKey || !S.canWrite || S.preview) return;
+  if (ev.key.length === 1 && quickSet(cell.dataset.e, cell.dataset.d, ev.key)) ev.preventDefault();
+});
+window.addEventListener('resize', () => { if (S.full) { const was = document.body.classList.contains('rot'); applyFullClasses(); if (was !== isRot()) { render(); if (S.menu) showMenu(); return; } } if (S.menu && !gNarrow()) showMenu(); });
+
+// ======================= Início =======================
+(async function boot() {
+  render();
+  const L = window.__obaLocal; S.local = !!L;
+  const [db, user, downloads] = L ? [L.db, null, L.downloads] : await Promise.all([window.claude.use('db'), window.claude.use('user'), window.claude.use('downloads')]);
+  S.db = db; S.user = user; S.downloads = downloads;
+  if (!db) { S.ready = true; S.offline = true; render(); toast('Não foi possível acessar o armazenamento compartilhado. Entre com sua conta para salvar as alterações.', true); return; }
+  if (user) {
+    const [own, edit, w] = await Promise.all([user.isOwner(), user.canEdit(), user.can('data.write')]);
+    S.canAdmin = !!(own || edit); S.canWrite = S.canAdmin || w !== false;
+    try { S.myId = await user.id(); } catch (e) {}
+  } else { S.canWrite = true; S.canAdmin = true; }
+  const need = ['setores', 'colaboradores', 'escala', 'feriados', 'config'];
+  const done = n => { S.loaded.add(n); if (need.every(x => S.loaded.has(x))) S.ready = true; scheduleRender(); };
+  const fail = e => { S.ready = true; S.saveErr = errMsg(e); scheduleRender(); };
+  db.collection('setores').onSnapshot(s => { S.sectors = s.docs.map(d => ({ id: d.id, ...d.data() })).filter(x => x.name); done('setores'); }, fail);
+  db.collection('colaboradores').onSnapshot(s => { S.emps = s.docs.map(d => ({ id: d.id, ...d.data() })).filter(x => x.name); done('colaboradores'); }, fail);
+  db.collection('escala').onSnapshot(s => {
+    const next = {}; for (const d of s.docs) { const v = d.data(); if (v && v.empId) next[d.id] = { empId: v.empId, ym: v.ym, days: v.days || {} }; }
+    // Mantém documentos ainda não confirmados pelo servidor
+    for (const [k, v] of Object.entries(S.esc)) if (v.local && !next[k]) next[k] = v;
+    S.esc = next; done('escala');
+  }, fail);
+  db.collection('feriados').onSnapshot(s => { S.hols = s.docs.map(d => ({ id: d.id, ...d.data() })).filter(x => x.date); resetHolCache(); done('feriados'); }, fail);
+  db.doc('config/app').onSnapshot(s => { const v = s.exists ? s.data() : {}; S.cfg = { storeName: '', maxConsec: 6, compPrazo: 0, ...v, rules: { ...DEF_RULES, ...((v && v.rules) || {}) } }; done('config'); }, fail);
+})();
+let rT = null;
+function scheduleRender() { if (rT) return; rT = requestAnimationFrame(() => { rT = null; render(); if (S.sheet && !document.activeElement.closest('.sheet form')) renderSheet(); if (S.menu) showMenu(); }); }
+</script>
+<script>if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));</script>
+</body></html>

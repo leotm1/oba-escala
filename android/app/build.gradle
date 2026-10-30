@@ -1,0 +1,50 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Cada vez que o GitHub gera o APK, o número da versão sobe sozinho.
+def numero = Integer.parseInt(System.getenv("GITHUB_RUN_NUMBER") ?: "1")
+
+android {
+    namespace 'com.obaescala.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.obaescala.app"
+        minSdk 24
+        targetSdk 34
+        versionCode numero
+        versionName "1." + numero
+    }
+
+    // Assinatura fixa: assim cada APK novo instala por cima do anterior sem perder os dados.
+    signingConfigs {
+        oba {
+            storeFile file("oba-escala.keystore")
+            storePassword System.getenv("OBA_KEYSTORE_SENHA") ?: "obaescala"
+            keyAlias "oba"
+            keyPassword System.getenv("OBA_KEYSTORE_SENHA") ?: "obaescala"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.oba
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core:1.13.1'
+}

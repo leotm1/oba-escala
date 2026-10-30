@@ -27,3 +27,14 @@ Faça um backup de vez em quando: se o navegador for limpo ou o app desinstalado
 
 Envie o novo `index.html` para o repositório e aumente o número em `sw.js` (`oba-escala-v1` para `oba-escala-v2`).
 Os dados guardados no aparelho continuam.
+
+## APK para Android
+
+Este repositório também gera um APK do Oba Escala, com o app inteiro dentro dele. Funciona sem internet e não depende do site.
+
+- O GitHub monta o APK sozinho, em uns 5 minutos, sempre que algo é enviado para o repositório. Para gerar de novo sem mudar nada: **Actions > Gerar APK > Run workflow**.
+- Para baixar no celular: abra **github.com/leotm1/oba-escala/releases** e toque em **Oba-Escala.apk**.
+- Para instalar: toque no arquivo baixado e permita "instalar apps desta fonte". Se o Play Protect avisar, toque em **Instalar assim mesmo**.
+- Os APKs novos instalam por cima do anterior e mantêm os dados.
+
+Os arquivos do APK ficam nas pastas `android/` (projeto Android), `apk/` (a página que vai dentro do APK) e `.github/workflows/` (o roteiro que gera o APK).

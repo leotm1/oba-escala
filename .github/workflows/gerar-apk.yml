@@ -1,0 +1,57 @@
+# Gera o APK do Oba Escala sempre que algo é enviado para o repositório (ou pelo botão Run workflow).
+# O APK pronto aparece em Releases (para baixar direto no celular) e em Actions > Artifacts.
+name: Gerar APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar os arquivos do repositório
+        uses: actions/checkout@v4
+
+      - name: Preparar o Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Preparar o Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Colocar o app dentro do APK
+        run: |
+          mkdir -p android/app/src/main/assets/www
+          cp apk/index.html android/app/src/main/assets/www/index.html
+          cp jspdf.umd.min.js android/app/src/main/assets/www/jspdf.umd.min.js
+
+      - name: Montar o APK
+        working-directory: android
+        run: gradle assembleRelease --no-daemon --stacktrace
+
+      - name: Dar nome ao arquivo
+        run: cp android/app/build/outputs/apk/release/app-release.apk Oba-Escala.apk
+
+      - name: Guardar em Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Oba-Escala-APK
+          path: Oba-Escala.apk
+
+      - name: Publicar em Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: apk-${{ github.run_number }}
+          name: Oba Escala ${{ github.run_number }}
+          body: Baixe o arquivo Oba-Escala.apk abaixo e abra no celular para instalar.
+          files: Oba-Escala.apk
+          make_latest: true
